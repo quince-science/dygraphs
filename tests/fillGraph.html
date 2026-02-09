@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>fillGraph</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
   </head>
   <body>
-    <p>Filled, no error bars:</p>
+    <p>Filled, no high/low bands:</p>
     <div id="div_g" style="width:600px; height:300px;"></div>
 
     <p>Filled, negatives:</p>
@@ -16,7 +19,8 @@
     <p>Filled on a per-series basis:</p>
     <div id="div_g3" style="width:600px; height:300px;"></div>
 
-    <script type="text/javascript">
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       var g1 = new Dygraph(
         document.getElementById("div_g"),
         function() {
@@ -57,6 +61,7 @@
           }
         }
       );
-    </script>
+    });
+    //--><!]]></script>
   </body>
 </html>

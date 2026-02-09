@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>Linear Regression</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
     <script type="text/javascript" src="../dist/dygraph.js"></script>
 
     <style type="text/css">
@@ -18,7 +22,8 @@
 
     <div id="demodiv" style="width: 480px; height: 320px;"></div>
 
-    <script type="text/javascript">
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       var data = [];
       for (var i = 0; i < 120; i++) {
         data.push([i,
@@ -41,7 +46,7 @@
       // if coeffs = [ null, [1, 2], null ] then we draw a regression for series 1
       // only. The regression line is y = 1 + 2 * x.
       var coeffs = [ null, null, null ];
-      function regression(series) {
+      regression = function regression(series) {
         // Only run the regression over visible points.
         var range = g.xAxisRange();
 
@@ -75,7 +80,7 @@
         g.updateOptions({});  // forces a redraw.
       }
 
-      function clearLines() {
+      clearLines = function clearLines() {
         for (var i = 0; i < coeffs.length; i++) coeffs[i] = null;
         g.updateOptions({});
       }
@@ -117,15 +122,15 @@
           ctx.restore();
         }
       }
-      
-    </script>
-    
+    });
+    //--><!]]></script>
+
     <div style="position: absolute; left: 500px; top: 150px;">
     <input type=button style="color: green;" value="Regression (Y1)" onClick="regression(1)" />
-    <br/><br/>
+    <br /><br />
     <input type=button style="color: blue;" value="Regression (Y2)" onClick="regression(2)" />
-    <br/><br/>
+    <br /><br />
     <input type=button value="Clear Lines" onClick="clearLines()" />
     </div>
-</body>
+  </body>
 </html>

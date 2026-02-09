@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2012 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 /*global Dygraph:false */
 
@@ -12,8 +14,6 @@ Current bits of jankiness:
 - Direct area access
 
 */
-
-"use strict";
 
 /**
  * Draws the gridlines, i.e. the gray horizontal & vertical lines running the
@@ -103,7 +103,6 @@ grid.prototype.willDrawChart = function(e) {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.lineTo(x, area.y);
-      ctx.closePath();
       ctx.stroke();
     });
     if (stroking) {

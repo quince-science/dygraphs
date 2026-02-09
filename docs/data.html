@@ -1,16 +1,12 @@
+<!--#set var="pagetitle" value="data format" -->
 <!--#include virtual="header.html" -->
-
-<style type="text/css">
-  code { white-space: pre; border: 1px dashed black; display: block; }
-  pre  { white-space: pre; border: 1px dashed black; }
-</style>
 
 <h2>dygraphs Data Format</h2>
 
 <p>When you create a Dygraph object, your code looks something like
 this:</p>
 
-<code>
+<code class="sitedata">
   g = new Dygraph(document.getElementById("div"),
                   <i>data</i>,
                   { <i>options</i> });
@@ -47,7 +43,7 @@ interpreted. These are:</p>
 <a name="csv"></a>
   <h3>CSV</h3>
 <p>Here's an example of what CSV data should look like:</p>
-<pre>
+<pre class="sitedata">
 Date,Series1,Series2
 2009/07/12,100,200  # comments are OK on data lines
 2009/07/19,150,201
@@ -63,11 +59,11 @@ y-values.</p>
 <h4>Headers</h4>
 <p>If you don't specify the <i>labels</i> option, dygraphs will look at the
 first line of your CSV data to get the labels. If you see numbers for series
-labels when you hover over the dygraph, it's likely because your first line
+labels when you hover over the dygraph, it’s likely because your first line
 contains data but is being parsed as a label. The solution is to either add
 a header line or specify the labels like this:</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(el,
               "2009/07/12,100,200\n" +
               "2009/07/19,150,201\n",
@@ -79,7 +75,7 @@ a header line or specify the labels like this:</p>
 the x values is. They're either dates or numbers. To make this
 determination, it looks at the first column of the first row ("2009/07/12"
 in the example above). Here's the heuristic: if it contains a '-' or a '/',
-or otherwise doesn't parse as a float, the it's a date. Otherwise, it's a
+or otherwise doesn’t parse as a float, then it’s a date. Otherwise, it’s a
 number.</p>
 
 <p>Once the type is determined, that doesn't mean all the values will parse
@@ -112,7 +108,7 @@ to make sure that everything gets displayed properly.<p>
 <p>Here's code which parses a CSV file with unix timestamps in the first
 column:</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(el,
               "Date,Series1,Series2\n" +
               "1247382000,100,200\n" +
@@ -122,7 +118,7 @@ column:</p>
                   x : {
                     valueFormatter: Dygraph.dateString_,
                     valueParser: function(x) { return 1000*parseInt(x); },
-                    ticker: Dygraph.dateTicker                
+                    ticker: Dygraph.dateTicker
                   }
                 }
               });
@@ -157,7 +153,7 @@ explicit ranges.</p>
 interpreted as ratios between zero and one. This is often the case if you're
 plotting a percentage.</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(el,
               "X,Frac1,Frac2\n" +
               "1,1/2,3/4\n"+
@@ -173,7 +169,7 @@ reasons not to:</p>
 <ul>
   <li>If you set both <i>fractions</i> and <i>errorBars</i>, then the
 denominator is interpreted as a sample size and dygraphs will plot <a
-  href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">Wilson
+  href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">Wilson
   binomial proportion confidence intervals</a> around each point.
 
   <li>If you set <i>showRoller</i>, then dygraphs will combine the values as
@@ -187,9 +183,9 @@ denominator is interpreted as a sample size and dygraphs will plot <a
 <p>Often you have a measurement and also a measure of its uncertainty: a
 standard deviation. If you specify the <i>errorBars</i> option, dygraphs
 will look for alternating value and standard deviation columns in your CSV
-data.  Here's what it should look like:</p>
+data and plot them as high/low bands. Here's what it should look like:</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(el,
               "X,Y1,Y2\n" +
               "1,10,5,20,5\n" +
@@ -206,18 +202,23 @@ confidence interval. If you want more or less confidence, you can set the
 average of your values in each rolling period and the RMS value of your
 standard deviations: sqrt(std1 + std2 + std3 + ... + stdN)/N.</p>
 
-<h5>Custom error bars</h5>
+<p>Note that this function is called <tt>errorBars</tt> for hysterical
+ raisins; these are drawn as high/low bands of confidence intervals
+ around the graph lines, not as actual error bars vertically bisecting
+ the data points.</p>
+
+<h5>Custom high/low bands</h5>
 <p>Sometimes your data has asymetric uncertainty or you want to specify
-something else with the error bars around a point. One example of this is
-the "temperatures" demo on the <a href="http://danvk.org/dygraphs">dygraphs
-  home page.</a>, where the point is the daily average and the bars denote
+something else with the high/low bands. One example of this is
+the "temperatures" demo on the <a href="index.html">dygraphs
+home page.</a>, where the point is the daily average and the bands denote
 the low and high temperatures for the day.</p>
 
 <p>To specify this format, set the <i>customBars</i> option. Your CSV values
 should each be three numbers separated by semicolons ("low;mid;high").
 Here's an example:</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(el,
               "X,Y1,Y2\n" +
               "1,10;20;30,20;5;25\n" +
@@ -227,7 +228,6 @@ Here's an example:</p>
 
 <p>The middle value need not lie between the low and high values. If you set
 a rolling period, the three values will all be averaged independently.</p>
-
 
 <a name="url"></a>
 <h3>URL</h3>
@@ -240,7 +240,6 @@ in text format (as opposed to a CSV file with an HTML header). You can see
 what the response looks like by checking your JS console or by requesting
 the URL yourself.</p>
 
-
 <a name="array"></a>
 <h3>Array (native format)</h3>
 <p>If you'll be constructing your data set from a server-side program (or
@@ -248,13 +247,13 @@ from JavaScript) then you're better off producing an array than CSV data.
 This saves the cost of parsing the CSV data and also avoids common parser
 errors.</p>
 
-<p>The downside is that it's harder to look at your data (you'll need to use
+<p>The downside is that it’s harder to look at your data (you'll need to use
 a JS debugger) and that the data format is a bit less clear for values with
 uncertainties.</p>
 
 <p>Here's an example of "native format":</p>
 
-<code>
+<code class="sitedata">
   new Dygraph(document.getElementById("graphdiv2"),
               [
                 [1,10,100],
@@ -276,7 +275,7 @@ option. There's no other way to set them.</p>
 object in the first column. Otherwise, specify a number. Here's a sample
 array with dates on the x-axis:</p>
 
-<code>
+<code class="sitedata">
   [
     [ new Date("2009/07/12"), 100, 200 ],
     [ new Date("2009/07/19"), 150, 220 ]
@@ -288,16 +287,16 @@ array with dates on the x-axis:</p>
 with the array format. If you specify any of these, the values become arrays
 (rather than numbers). Here's what the format looks like for each one:</p>
 
-<code>
+<code class="sitedata">
   <i>errorBars</i>: [x, [value1, std1], [value2, std2], ...]
   <i>fractions</i>: [x, [num1, den1], [num2, den2], ...]
   <i>customBars</i>: [x, [low1, val1, high1], [low2, val2, high2], ...]
 </code>
 
 <p>To specify missing data, set the value to null or NaN. You may not set a value
-inside an array to null or NaN. Use null or NaN instead of the entire array. 
+inside an array to null or NaN. Use null or NaN instead of the entire array.
 The only difference between the two is when the option
-<a href="options.html#conectSeparatedPoints">connectSeparatedPoints</a>
+<a href="options.html#connectSeparatedPoints">connectSeparatedPoints</a>
 true. In that case, the gaps created by nulls are filled in, and gaps
 created by NaNs are preserved.
 </p>
@@ -308,7 +307,7 @@ created by NaNs are preserved.
 <p>You can specify a function that returns any of the other types. If
 <i>x</i> is a valid piece of dygraphs input, then so is</p>
 
-<code>
+<code class="sitedata">
   function() { return x; }
 </code>
 
@@ -317,7 +316,7 @@ Functions can return strings, arrays, data tables, URLs, or any other data type.
 <a name="datatable"></a>
 <h3>DataTable</h3>
 <p>You can also specify a Google Visualization Library <a
-  href="http://code.google.com/apis/visualization/documentation/reference.html#DataTable">DataTable</a>
+  href="https://developers.google.com/chart/interactive/docs/reference#DataTable">DataTable</a>
 object as your input data. This lets you easily switch between dygraphs and
 other gviz visualizations such as the Annotated Timeline. It also lets you
 embed a Dygraph in a Google Spreadsheet.</p>
@@ -325,7 +324,7 @@ embed a Dygraph in a Google Spreadsheet.</p>
 <p>You'll need to set your first column's type to one of "number", "date"
 or "datetime".</p>
 
-<pre>
+<pre class="sitedata">
 DataTable TODO:
 - When to use Dygraph.GvizWrapper
 - how to specify fractions

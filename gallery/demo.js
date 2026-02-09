@@ -1,4 +1,5 @@
 /*global Gallery,Dygraph,data */
+//galleryActive=false
 Gallery.register(
   'demo',
   {
@@ -6,7 +7,7 @@ Gallery.register(
     title: 'The original demo!',
     setup: function(parent) {
       parent.innerHTML =
-        "<span style='font-size: small;'>(Mouse over to highlight individual values. Click and drag to zoom. Double-click to zoom out.)</span><br/>" +
+        "<span style='font-size: small;'>(Mouse over to highlight individual values. Click and drag to zoom. Double-click to zoom out.)</span><br />" +
         "<table><tr><td>" +
         "<div id='demodiv'></div>" +
         "</td><td valign=top>" +
@@ -21,7 +22,7 @@ Gallery.register(
                 var zp = function(x) { if (x < 10) return "0"+x; else return x; };
                 var r = "date,parabola,line,another line,sine wave\n";
                 for (var i=1; i<=31; i++) {
-                r += "200610" + zp(i);
+                r += "2006-10-" + zp(i);
                 r += "," + 10*(i*(31-i));
                 r += "," + 10*(8*i);
                 r += "," + 10*(250 - 8*i);

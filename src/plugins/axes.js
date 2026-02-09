@@ -1,12 +1,12 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2012 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /*global Dygraph:false */
-
-'use strict';
 
 /*
 Bits of jankiness:
@@ -160,11 +160,14 @@ axes.prototype.willDrawChart = function(e) {
     };
   };
 
-  if (g.getOptionForAxis('drawAxis', 'y')) {
+  const that = this;
+
+  if (g.getOptionForAxis('drawAxis', 'y') ||
+      (g.numAxes() == 2 && g.getOptionForAxis('drawAxis', 'y2'))) {
     if (layout.yticks && layout.yticks.length > 0) {
       var num_axes = g.numAxes();
       var getOptions = [makeOptionGetter('y'), makeOptionGetter('y2')];
-      layout.yticks.forEach(tick => {
+      layout.yticks.forEach(function (tick) {
         if (tick.label === undefined) return;  // this tick only has a grid line.
         x = area.x;
         var sgn = 1;
@@ -176,13 +179,14 @@ axes.prototype.willDrawChart = function(e) {
           prec_axis = 'y2';
           getAxisOption = getOptions[1];
         }
+        if (!getAxisOption('drawAxis')) return;
         var fontSize = getAxisOption('axisLabelFontSize');
         y = area.y + tick.pos * area.h;
 
         /* Tick marks are currently clipped, so don't bother drawing them.
         context.beginPath();
         context.moveTo(halfUp(x), halfDown(y));
-        context.lineTo(halfUp(x - sgn * this.attr_('axisTickSize')), halfDown(y));
+        context.lineTo(halfUp(x - sgn * that.attr_('axisTickSize')), halfDown(y));
         context.closePath();
         context.stroke();
         */
@@ -194,7 +198,10 @@ axes.prototype.willDrawChart = function(e) {
         if (top + fontSize + 3 > canvasHeight) {
           label.style.bottom = '0';
         } else {
-          label.style.top = top + 'px';
+          // The lowest tick on the y-axis often overlaps with the leftmost
+          // tick on the x-axis. Shift the bottom tick up a little bit to
+          // compensate if necessary.
+          label.style.top = Math.min(top, canvasHeight - (2 * fontSize)) + 'px';
         }
         // TODO: replace these with css classes?
         if (tick.axis === 0) {
@@ -207,20 +214,8 @@ axes.prototype.willDrawChart = function(e) {
         }
         label.style.width = getAxisOption('axisLabelWidth') + 'px';
         containerDiv.appendChild(label);
-        this.ylabels_.push(label);
+        that.ylabels_.push(label);
       });
-
-      // The lowest tick on the y-axis often overlaps with the leftmost
-      // tick on the x-axis. Shift the bottom tick up a little bit to
-      // compensate if necessary.
-      var bottomTick = this.ylabels_[0];
-      // Interested in the y2 axis also?
-      var fontSize = g.getOptionForAxis('axisLabelFontSize', 'y');
-      var bottom = parseInt(bottomTick.style.top, 10) + fontSize;
-      if (bottom > canvasHeight - fontSize) {
-        bottomTick.style.top = (parseInt(bottomTick.style.top, 10) -
-            fontSize / 2) + 'px';
-      }
     }
 
     // draw a vertical line on the left to separate the chart from the labels.
@@ -243,7 +238,7 @@ axes.prototype.willDrawChart = function(e) {
     context.stroke();
 
     // if there's a secondary y-axis, draw a vertical line for that, too.
-    if (g.numAxes() == 2) {
+    if (g.numAxes() == 2 && g.getOptionForAxis('drawAxis', 'y2')) {
       context.strokeStyle = g.getOptionForAxis('axisLineColor', 'y2');
       context.lineWidth = g.getOptionForAxis('axisLineWidth', 'y2');
       context.beginPath();
@@ -257,7 +252,7 @@ axes.prototype.willDrawChart = function(e) {
   if (g.getOptionForAxis('drawAxis', 'x')) {
     if (layout.xticks) {
       var getAxisOption = makeOptionGetter('x');
-      layout.xticks.forEach(tick => {
+      layout.xticks.forEach(function (tick) {
         if (tick.label === undefined) return;  // this tick only has a grid line.
         x = area.x + tick.pos * area.w;
         y = area.y + area.h;
@@ -265,7 +260,7 @@ axes.prototype.willDrawChart = function(e) {
         /* Tick marks are currently clipped, so don't bother drawing them.
         context.beginPath();
         context.moveTo(halfUp(x), halfDown(y));
-        context.lineTo(halfUp(x), halfDown(y + this.attr_('axisTickSize')));
+        context.lineTo(halfUp(x), halfDown(y + that.attr_('axisTickSize')));
         context.closePath();
         context.stroke();
         */
@@ -287,7 +282,7 @@ axes.prototype.willDrawChart = function(e) {
         label.style.left = left + 'px';
         label.style.width = getAxisOption('axisLabelWidth') + 'px';
         containerDiv.appendChild(label);
-        this.xlabels_.push(label);
+        that.xlabels_.push(label);
       });
     }
 

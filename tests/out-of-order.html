@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>out of order</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
     <script type="text/javascript" src="../dist/dygraph.js"></script>
 
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       // Capture warnings, since these are what we want in this test.
       Dygraph.prototype.warn = function(msg) {
         console.log(msg);
@@ -53,7 +58,8 @@
 
       }
       google.setOnLoadCallback(drawVisualization);
-    </script>
+    });
+    //--><!]]></script>
   </head>
   <body>
     <p>CSV data source out of order:</p>

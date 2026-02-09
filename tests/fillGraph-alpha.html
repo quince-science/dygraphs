@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>fillGraph with per series fillAlpha</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
   </head>
   <body>
     <p>Filled, using default value</p>
@@ -19,7 +22,8 @@
     <p>Filled, using a mix of global and per series values</p>
     <div id="div_g3" style="width:600px; height:300px;"></div>
 
-    <script type="text/javascript">
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       // Create some data for the charts
       var gdata = "X,Y1,Y2\n";
       for (var i = 0; i < 100; i++) {
@@ -67,8 +71,7 @@
           }
         }
       );
-
-
-    </script>
+    });
+    //--><!]]></script>
   </body>
 </html>

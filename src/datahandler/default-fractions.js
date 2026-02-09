@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2013 David Eberlein (david.eberlein@ch.sauter-bc.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -10,7 +12,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import DygraphDataHandler from './datahandler';
 import DefaultHandler from './default';
@@ -21,7 +22,7 @@ import DefaultHandler from './default';
  */
 var DefaultFractionHandler = function() {
 };
-  
+
 DefaultFractionHandler.prototype = new DefaultHandler();
 
 DefaultFractionHandler.prototype.extractSeries = function(rawData, i, options) {
@@ -29,7 +30,8 @@ DefaultFractionHandler.prototype.extractSeries = function(rawData, i, options) {
   var series = [];
   var x, y, point, num, den, value;
   var mult = 100.0;
-  var logScale = options.get('logscale');
+  const seriesLabel = options.get("labels")[i];
+  const logScale = options.getForSeries("logscale", seriesLabel);
   for ( var j = 0; j < rawData.length; j++) {
     x = rawData[j][0];
     point = rawData[j][i];
@@ -60,7 +62,7 @@ DefaultFractionHandler.prototype.extractSeries = function(rawData, i, options) {
 };
 
 DefaultFractionHandler.prototype.rollingAverage = function(originalData, rollPeriod,
-    options) {
+    options, i) {
   rollPeriod = Math.min(rollPeriod, originalData.length);
   var rollingData = [];
 

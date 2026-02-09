@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Robert Konigsberg (konigsberg@google.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -11,7 +13,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from './dygraph-utils';
 
@@ -44,7 +45,7 @@ DygraphInteraction.maybeTreatMouseOpAsClick = function(event, g, context) {
   var regionHeight = Math.abs(context.dragEndY - context.dragStartY);
 
   if (regionWidth < 2 && regionHeight < 2 &&
-      g.lastx_ !== undefined && g.lastx_ != -1) {
+      g.lastx_ !== undefined && g.lastx_ !== null) {
     DygraphInteraction.treatMouseOpAsClick(g, event, context);
   }
 
@@ -107,6 +108,10 @@ DygraphInteraction.startPan = function(event, g, context) {
       boundedValues[i] = [boundedTopValue, boundedBottomValue];
     }
     context.boundedValues = boundedValues;
+  } else {
+    // undo effect if it was once set
+    context.boundedDates = null;
+    context.boundedValues = null;
   }
 
   // Record the range of each y-axis at the start of the drag.
@@ -418,12 +423,13 @@ DygraphInteraction.startTouch = function(event, g, context) {
   var touches = [];
   for (var i = 0; i < event.touches.length; i++) {
     var t = event.touches[i];
+    var rect = t.target.getBoundingClientRect()
     // we dispense with 'dragGetX_' because all touchBrowsers support pageX
     touches.push({
       pageX: t.pageX,
       pageY: t.pageY,
-      dataX: g.toDataXCoord(t.pageX),
-      dataY: g.toDataYCoord(t.pageY)
+      dataX: g.toDataXCoord(t.clientX - rect.left),
+      dataY: g.toDataYCoord(t.clientY - rect.top)
       // identifier: t.identifier
     });
   }
@@ -530,9 +536,10 @@ DygraphInteraction.moveTouch = function(event, g, context) {
 
   var didZoom = false;
   if (context.touchDirections.x) {
+    var cFactor = c_init.dataX - swipe.dataX / xScale;
     g.dateWindow_ = [
-      c_init.dataX - swipe.dataX + (context.initialRange.x[0] - c_init.dataX) / xScale,
-      c_init.dataX - swipe.dataX + (context.initialRange.x[1] - c_init.dataX) / xScale
+      cFactor + (context.initialRange.x[0] - c_init.dataX) / xScale,
+      cFactor + (context.initialRange.x[1] - c_init.dataX) / xScale
     ];
     didZoom = true;
   }
@@ -544,9 +551,10 @@ DygraphInteraction.moveTouch = function(event, g, context) {
       if (logscale) {
         // TODO(danvk): implement
       } else {
+        var cFactor = c_init.dataY - swipe.dataY / yScale;
         axis.valueRange = [
-          c_init.dataY - swipe.dataY + (context.initialRange.y[0] - c_init.dataY) / yScale,
-          c_init.dataY - swipe.dataY + (context.initialRange.y[1] - c_init.dataY) / yScale
+          cFactor + (context.initialRange.y[0] - c_init.dataY) / yScale,
+          cFactor + (context.initialRange.y[1] - c_init.dataY) / yScale
         ];
         didZoom = true;
       }

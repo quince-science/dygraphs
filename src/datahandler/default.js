@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2013 David Eberlein (david.eberlein@ch.sauter-bc.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -10,7 +12,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import DygraphDataHandler from './datahandler';
 
@@ -27,7 +28,8 @@ DefaultHandler.prototype = new DygraphDataHandler();
 DefaultHandler.prototype.extractSeries = function(rawData, i, options) {
   // TODO(danvk): pre-allocate series here.
   var series = [];
-  var logScale = options.get('logscale');
+  const seriesLabel = options.get("labels")[i];
+  const logScale = options.getForSeries("logscale", seriesLabel);
   for ( var j = 0; j < rawData.length; j++) {
     var x = rawData[j][0];
     var point = rawData[j][i];
@@ -45,7 +47,7 @@ DefaultHandler.prototype.extractSeries = function(rawData, i, options) {
 
 /** @inheritDoc */
 DefaultHandler.prototype.rollingAverage = function(originalData, rollPeriod,
-    options) {
+    options, i) {
   rollPeriod = Math.min(rollPeriod, originalData.length);
   var rollingData = [];
 
@@ -77,8 +79,7 @@ DefaultHandler.prototype.rollingAverage = function(originalData, rollPeriod,
 };
 
 /** @inheritDoc */
-DefaultHandler.prototype.getExtremeYValues = function(series, dateWindow,
-    options) {
+DefaultHandler.prototype.getExtremeYValues = function getExtremeYValues(series, dateWindow, stepPlot) {
   var minY = null, maxY = null, y;
   var firstIdx = 0, lastIdx = series.length - 1;
 

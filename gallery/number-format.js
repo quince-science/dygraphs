@@ -1,10 +1,11 @@
 /*global Gallery,Dygraph,data */
+//galleryActive=false
 Gallery.register(
   'number-format',
   {
     name: 'Number formatting',
     setup: function(parent) {
-      parent.innerHTML = 
+      parent.innerHTML =
           "<p>The default formatting mimics printf with %.<i>p</i>g where <i>p</i> is" +
           "   the precision to use.  It turns out that JavaScript's toPrecision()" +
           "   method is almost but not exactly equal to %g; they differ for values" +
@@ -17,7 +18,7 @@ Gallery.register(
 
           "<p>Precision to use (1 to 21):" +
           "  <input type='text' id='p_input' size='20'></p>" +
-          "<p/>" +
+          "<p />" +
           "<div id='content' style='font-family:Courier New,monospace'></div>";
     },
     run: function() {

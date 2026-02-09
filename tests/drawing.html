@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>Dygraphs Drawing Demo</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
     <script type="text/javascript" src="../dist/dygraph.js"></script>
 
-    <script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
     var start_date = new Date("2002/12/29").getTime();
     var end_date = new Date().getTime();
     data = [];
@@ -17,11 +21,11 @@
           dd = date.getDate();
       data.push( [ new Date(Date.UTC(yyyy, mm, dd)), 50 ]);
     }
-    </script>
+    //--><!]]></script>
 
     <style>
     #tool_zoom {
-      background: url('drawing/tool-palette.png');
+      background: url('../common/tool-palette.png');
       background-position: 0px 0px;
       width: 32px;
       height: 33px;
@@ -29,14 +33,14 @@
       display: inline-block;
     }
     #tool_pencil {
-      background: url('drawing/tool-palette.png');
+      background: url('../common/tool-palette.png');
       background-position: -32px 0px;
       width: 32px;
       height: 33px;
       display: inline-block;
     }
     #tool_eraser {
-      background: url('drawing/tool-palette.png');
+      background: url('../common/tool-palette.png');
       background-position: -64px 0px;
       width: 33px;
       height: 33px;
@@ -46,7 +50,7 @@
       display: inline-block;
     }
     </style>
-</head>
+  </head>
 <body>
   <h2>Time Series Drawing Demo</h2>
   <div id='toolbar'>
@@ -54,7 +58,8 @@
   </div>
   <div id="draw_div" style="width: 800px; height: 400px;"></div>
 
-  <script type="text/javascript">
+  <script type="text/javascript"><!--//--><![CDATA[//><!--
+  Dygraph.onDOMready(function onDOMready() {
     var isDrawing = false;
     var lastDrawRow = null, lastDrawValue = null;
     var tool = 'pencil';
@@ -111,7 +116,7 @@
       lastDrawValue = null;
     }
 
-    function change_tool(tool_div) {
+    change_tool = function change_tool(tool_div) {
       var ids = ['tool_zoom', 'tool_pencil', 'tool_eraser'];
       for (var i = 0; i < ids.length; i++) {
         var div = document.getElementById(ids[i]);
@@ -125,9 +130,9 @@
 
       var dg_div = document.getElementById("draw_div");
       if (tool == 'pencil') {
-        dg_div.style.cursor = 'url(drawing/cursor-pencil.png) 2 30, auto';
+        dg_div.style.cursor = 'url(../common/cursor-pencil.png) 2 30, auto';
       } else if (tool == 'eraser') {
-        dg_div.style.cursor = 'url(drawing/cursor-eraser.png) 10 30, auto';
+        dg_div.style.cursor = 'url(../common/cursor-eraser.png) 10 30, auto';
       } else if (tool == 'zoom') {
         dg_div.style.cursor = 'crosshair';
       }
@@ -140,6 +145,9 @@
           labels: [ 'Date', 'Value' ],
           labelsUTC: true,
           interactionModel: {
+            // the next line is required when using the
+            // defaultInteractionModel mousedown function.
+            willDestroyContextMyself: true,
             mousedown: function (event, g, context) {
               if (tool == 'zoom') {
                 Dygraph.defaultInteractionModel.mousedown(event, g, context);
@@ -150,21 +158,25 @@
               }
             },
             mousemove: function (event, g, context) {
-              if (tool == 'zoom') {
-              } else {
+              // note that the defaultInteractionModel dynamically binds
+              // its own mousemove event inside the mousedown handler
+              if (tool != 'zoom') {
                 if (!isDrawing) return;
                 setPoint(event, g, context);
               }
             },
             mouseup: function(event, g, context) {
-              if (tool == 'zoom') {
-              } else {
+              // note that the defaultInteractionModel dynamically binds
+              // its own mouseup event inside the mousedown handler
+              if (tool != 'zoom') {
                 finishDraw();
               }
             },
             mouseout: function(event, g, context) {
-              if (tool == 'zoom') {
-              }
+              // note that the defaultInteractionModel does not use
+              // the mouseout event, instead it detects when the mouse
+              // is outside the chart using a dynamically bound
+              // mousemove event
             },
             dblclick: function(event, g, context) {
               Dygraph.defaultInteractionModel.dblclick(event, g, context);
@@ -199,9 +211,7 @@
           }
         });
         window.onmouseup = finishDraw;
-  </script>
-
-  <p style='font-size: 10pt'>Toolbar/cursor icons are CC-licensed from <a
-  href="http://www.fatcow.com/free-icons">FatCow</a>.</p>
+  });
+  //--><!]]></script>
 </body>
 </html>

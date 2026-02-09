@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -11,7 +13,6 @@
 
 // TODO: remove this jshint directive & fix the warnings.
 /*jshint sub:true */
-"use strict";
 
 import * as utils from './dygraph-utils';
 import DEFAULT_ATTRS from './dygraph-default-attrs';
@@ -42,7 +43,7 @@ var DygraphOptions = function(dygraph) {
   this.dygraph_ = dygraph;
 
   /**
-   * Array of axis index to { series : [ series names ] , options : { axis-specific options. }
+   * Array of axis index to { series : [ series names ] , options : { axis-specific options. } }
    * @type {Array.<{series : Array.<string>, options : Object}>} @private
    */
   this.yAxes_ = [];
@@ -139,8 +140,8 @@ DygraphOptions.prototype.reparseSeries = function() {
   //   }
   // }
   //
-  // So, if series is found, it's expected to contain per-series data, otherwise set a
-  // default.
+  // So, if series is found, it's expected to contain per-series data,
+  // otherwise set a default.
   var seriesDict = this.user_.series || {};
   for (var idx = 0; idx < this.labels_.length; idx++) {
     var seriesName = this.labels_[idx];
@@ -166,11 +167,9 @@ DygraphOptions.prototype.reparseSeries = function() {
   }
   utils.update(this.xAxis_.options, axis_opts["x"] || {});
 
+  if (typeof process !== 'undefined' && process.env.NODE_ENV != 'production') {
   // For "production" code, this gets removed by uglifyjs.
-  if (typeof(process) !== 'undefined') {
-    if (process.env.NODE_ENV != 'production') {
-      this.validateOptions_();
-    }
+    this.validateOptions_();
   }
 };
 
@@ -327,9 +326,8 @@ DygraphOptions.prototype.seriesNames = function() {
   return this.labels_;
 };
 
+if (typeof process !== 'undefined' && process.env.NODE_ENV != 'production') {
 // For "production" code, this gets removed by uglifyjs.
-if (typeof(process) !== 'undefined') {
-if (process.env.NODE_ENV != 'production') {
 
 /**
  * Validate all options.
@@ -384,9 +382,9 @@ DygraphOptions.prototype.warnInvalidOption_ = function(optionName) {
     WARNINGS[optionName] = true;
     var isSeries = (this.labels_.indexOf(optionName) >= 0);
     if (isSeries) {
-      console.warn('Use new-style per-series options (saw ' + optionName + ' as top-level options key). See http://bit.ly/1tceaJs');
+      console.warn('Use new-style per-series options (saw ' + optionName + ' as top-level options key). See http://blog.dygraphs.com/2012/12/the-new-and-better-way-to-specify.html (The New and Better Way to Specify Series and Axis Options).');
     } else {
-      console.warn('Unknown option ' + optionName + ' (full list of options at dygraphs.com/options.html');
+      console.warn('Unknown option ' + optionName + ' (see https://dygraphs.com/options.html for the full list of options)');
     }
     throw "invalid option " + optionName;
   }
@@ -397,7 +395,6 @@ DygraphOptions.resetWarnings_ = function() {
   WARNINGS = {};
 };
 
-}
 }
 
 export default DygraphOptions;

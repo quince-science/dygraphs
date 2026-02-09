@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2013 David Eberlein (david.eberlein@ch.sauter-bc.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -10,7 +12,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import BarsHandler from './bars';
 
@@ -28,7 +29,8 @@ CustomBarsHandler.prototype.extractSeries = function(rawData, i, options) {
   // TODO(danvk): pre-allocate series here.
   var series = [];
   var x, y, point;
-  var logScale = options.get('logscale');
+  const seriesLabel = options.get("labels")[i];
+  const logScale = options.getForSeries("logscale", seriesLabel);
   for ( var j = 0; j < rawData.length; j++) {
     x = rawData[j][0];
     point = rawData[j][i];
@@ -56,7 +58,7 @@ CustomBarsHandler.prototype.extractSeries = function(rawData, i, options) {
 
 /** @inheritDoc */
 CustomBarsHandler.prototype.rollingAverage =
-    function(originalData, rollPeriod, options) {
+    function(originalData, rollPeriod, options, i) {
   rollPeriod = Math.min(rollPeriod, originalData.length);
   var rollingData = [];
   var y, low, high, mid,count, i, extremes;
@@ -88,7 +90,7 @@ CustomBarsHandler.prototype.rollingAverage =
     if (count) {
       rollingData[i] = [
           originalData[i][0],
-          1.0 * mid / count, 
+          1.0 * mid / count,
           [ 1.0 * low / count,
             1.0 * high / count ] ];
     } else {

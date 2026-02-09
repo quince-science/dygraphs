@@ -1,13 +1,17 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
  * @fileoverview Description of this file.
  * @author danvk@google.com (Dan Vanderkam)
- *
+ */
+
+/*
  * A ticker is a function with the following interface:
  *
  * function(a, b, pixels, options_view, dygraph, forced_values);
@@ -60,7 +64,6 @@
 
 /*jshint sub:true */
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from './dygraph-utils';
 
@@ -79,8 +82,8 @@ var TickList = undefined;  // the ' = undefined' keeps jshint happy.
 var Ticker = undefined;  // the ' = undefined' keeps jshint happy.
 
 /** @type {Ticker} */
-export var numericLinearTicks = function(a, b, pixels, opts, dygraph, vals) {
-  var nonLogscaleOpts = function(opt) {
+export var numericLinearTicks = function (a, b, pixels, opts, dygraph, vals) {
+  var nonLogscaleOpts = function (opt) {
     if (opt === 'logscale') return false;
     return opts(opt);
   };
@@ -88,7 +91,7 @@ export var numericLinearTicks = function(a, b, pixels, opts, dygraph, vals) {
 };
 
 /** @type {Ticker} */
-export var numericTicks = function(a, b, pixels, opts, dygraph, vals) {
+export var numericTicks = function (a, b, pixels, opts, dygraph, vals) {
   var pixels_per_tick = /** @type{number} */(opts('pixelsPerLabel'));
   var ticks = [];
   var i, j, tickV, nTicks;
@@ -205,9 +208,16 @@ export var numericTicks = function(a, b, pixels, opts, dygraph, vals) {
   return ticks;
 };
 
+/** @type {Ticker} */
+export var integerTicks = function (a, b, pixels, opts, dygraph, vals) {
+    var allTicks = numericTicks(a, b, pixels, opts, dygraph, vals);
+    return allTicks.filter(function (tick) {
+      return tick.v % 1 === 0;
+    });
+};
 
 /** @type {Ticker} */
-export var dateTicker = function(a, b, pixels, opts, dygraph, vals) {
+export var dateTicker = function (a, b, pixels, opts, dygraph, vals) {
   var chosen = pickDateTickGranularity(a, b, pixels, opts);
 
   if (chosen >= 0) {
@@ -265,7 +275,6 @@ var DateField = {
   NUM_DATEFIELDS: 7
 };
 
-
 /**
  * The value of datefield will start at an even multiple of "step", i.e.
  *   if datefield=SS and step=5 then the first tick will be on a multiple of 5s.
@@ -303,13 +312,12 @@ TICK_PLACEMENT[Granularity.SIX_HOURLY]      = {datefield: DateField.DATEFIELD_HH
 TICK_PLACEMENT[Granularity.DAILY]           = {datefield: DateField.DATEFIELD_D,  step:   1, spacing: 1000 * 86400};
 TICK_PLACEMENT[Granularity.TWO_DAILY]       = {datefield: DateField.DATEFIELD_D,  step:   2, spacing: 1000 * 86400 * 2};
 TICK_PLACEMENT[Granularity.WEEKLY]          = {datefield: DateField.DATEFIELD_D,  step:   7, spacing: 1000 * 604800};
-TICK_PLACEMENT[Granularity.MONTHLY]         = {datefield: DateField.DATEFIELD_M,  step:   1, spacing: 1000 * 7200  * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 / 12
-TICK_PLACEMENT[Granularity.QUARTERLY]       = {datefield: DateField.DATEFIELD_M,  step:   3, spacing: 1000 * 21600 * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 / 4
-TICK_PLACEMENT[Granularity.BIANNUAL]        = {datefield: DateField.DATEFIELD_M,  step:   6, spacing: 1000 * 43200 * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 / 2
-TICK_PLACEMENT[Granularity.ANNUAL]          = {datefield: DateField.DATEFIELD_Y,  step:   1, spacing: 1000 * 86400   * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 * 1
-TICK_PLACEMENT[Granularity.DECADAL]         = {datefield: DateField.DATEFIELD_Y,  step:  10, spacing: 1000 * 864000  * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 * 10
-TICK_PLACEMENT[Granularity.CENTENNIAL]      = {datefield: DateField.DATEFIELD_Y,  step: 100, spacing: 1000 * 8640000 * 365.2524}; // 1e3 * 60 * 60 * 24 * 365.2524 * 100
-
+TICK_PLACEMENT[Granularity.MONTHLY]         = {datefield: DateField.DATEFIELD_M,  step:   1, spacing: 1000 * 7200  * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 / 12
+TICK_PLACEMENT[Granularity.QUARTERLY]       = {datefield: DateField.DATEFIELD_M,  step:   3, spacing: 1000 * 21600 * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 / 4
+TICK_PLACEMENT[Granularity.BIANNUAL]        = {datefield: DateField.DATEFIELD_M,  step:   6, spacing: 1000 * 43200 * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 / 2
+TICK_PLACEMENT[Granularity.ANNUAL]          = {datefield: DateField.DATEFIELD_Y,  step:   1, spacing: 1000 * 86400   * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 * 1
+TICK_PLACEMENT[Granularity.DECADAL]         = {datefield: DateField.DATEFIELD_Y,  step:  10, spacing: 1000 * 864000  * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 * 10
+TICK_PLACEMENT[Granularity.CENTENNIAL]      = {datefield: DateField.DATEFIELD_Y,  step: 100, spacing: 1000 * 8640000 * 365.2425}; // 1e3 * 60 * 60 * 24 * 365.2425 * 100
 
 /**
  * This is a list of human-friendly values at which to show tick marks on a log
@@ -318,7 +326,7 @@ TICK_PLACEMENT[Granularity.CENTENNIAL]      = {datefield: DateField.DATEFIELD_Y,
  * NOTE: this assumes that utils.LOG_SCALE = 10.
  * @type {Array.<number>}
  */
-var PREFERRED_LOG_TICK_VALUES = (function() {
+var PREFERRED_LOG_TICK_VALUES = (function () {
   var vals = [];
   for (var power = -39; power <= 39; power++) {
     var range = Math.pow(10, power);
@@ -340,7 +348,7 @@ var PREFERRED_LOG_TICK_VALUES = (function() {
  * @return {number} The appropriate axis granularity for this chart. See the
  *     enumeration of possible values in dygraph-tickers.js.
  */
-var pickDateTickGranularity = function(a, b, pixels, opts) {
+export var pickDateTickGranularity = function (a, b, pixels, opts) {
   var pixels_per_tick = /** @type{number} */(opts('pixelsPerLabel'));
   for (var i = 0; i < Granularity.NUM_GRANULARITIES; i++) {
     var num_ticks = numDateTicks(a, b, i);
@@ -358,7 +366,7 @@ var pickDateTickGranularity = function(a, b, pixels, opts) {
  * @param {number} granularity (one of the granularities enumerated above)
  * @return {number} (Approximate) number of ticks that would result.
  */
-var numDateTicks = function(start_time, end_time, granularity) {
+var numDateTicks = function (start_time, end_time, granularity) {
   var spacing = TICK_PLACEMENT[granularity].spacing;
   return Math.round(1.0 * (end_time - start_time) / spacing);
 };
@@ -372,7 +380,7 @@ var numDateTicks = function(start_time, end_time, granularity) {
  * @param {Dygraph=} dg
  * @return {!TickList}
  */
-export var getDateAxis = function(start_time, end_time, granularity, opts, dg) {
+export var getDateAxis = function (start_time, end_time, granularity, opts, dg) {
   var formatter = /** @type{AxisLabelFormatter} */(
       opts("axisLabelFormatter"));
   var utc = opts("labelsUTC");
@@ -402,7 +410,7 @@ export var getDateAxis = function(start_time, end_time, granularity, opts, dg) {
     // This will put the ticks on Sundays.
     start_date_offset = accessors.getDay(start_date);
   }
-  
+
   date_array[datefield] -= start_date_offset;
   for (var df = datefield + 1; df < DateField.NUM_DATEFIELDS; df++) {
     // The minimum value is 1 for the day of month, and 0 for all other fields.

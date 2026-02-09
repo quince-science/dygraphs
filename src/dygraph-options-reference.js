@@ -1,16 +1,15 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
-
-"use strict";
 
 var OPTIONS_REFERENCE = null;
 
+if (typeof process !== 'undefined' && process.env.NODE_ENV != 'production') {
 // For "production" code, this gets removed by uglifyjs.
-if (typeof(process) !== 'undefined') {
-if (process.env.NODE_ENV != 'production') {
 
 // NOTE: in addition to parsing as JS, this snippet is expected to be valid
 // JSON. This assumption cannot be checked in JS, but it will be checked when
@@ -18,6 +17,12 @@ if (process.env.NODE_ENV != 'production') {
 // most part, this just means that you should always use double quotes.
 OPTIONS_REFERENCE =  // <JSON>
 {
+  "animateBackgroundFade": {
+    "default": "true",
+    "labels": ["Overall display"],
+    "type": "boolean",
+    "description": "Activate an animation effect for a gradual fade."
+  },
   "xValueParser": {
     "default": "parseFloat() or Date.parse()*",
     "labels": ["CSV parsing"],
@@ -57,16 +62,16 @@ OPTIONS_REFERENCE =  // <JSON>
   "drawPointCallback": {
     "default": "null",
     "labels": ["Data Line display"],
-    "type": "function(g, seriesName, canvasContext, cx, cy, color, pointSize)",
+    "type": "function(g, seriesName, canvasContext, cx, cy, color, pointSize, idx)",
     "parameters": [
-      [ "g" , "the reference graph" ],
-      [ "seriesName" , "the name of the series" ],
-      [ "canvasContext" , "the canvas to draw on" ],
-      [ "cx" , "center x coordinate" ],
-      [ "cy" , "center y coordinate" ],
-      [ "color" , "series color" ],
-      [ "pointSize" , "the radius of the image." ],
-      [ "idx" , "the row-index of the point in the data."]
+      ["g", "the reference graph"],
+      ["seriesName", "the name of the series"],
+      ["canvasContext", "the canvas to draw on"],
+      ["cx", "center x coordinate"],
+      ["cy", "center y coordinate"],
+      ["color", "series color"],
+      ["pointSize", "the radius of the image."],
+      ["idx", "the row-index of the point in the data."]
     ],
     "description": "Draw a custom item when drawPoints is enabled. Default is a small dot matching the series color. This method should constrain drawing to within pointSize pixels from (cx, cy).  Also see <a href='#drawHighlightPointCallback'>drawHighlightPointCallback</a>"
   },
@@ -76,25 +81,31 @@ OPTIONS_REFERENCE =  // <JSON>
     "type": "integer",
     "description": "Height, in pixels, of the chart. If the container div has been explicitly sized, this will be ignored."
   },
+  "resizable": {
+    "default": "no",
+    "labels": ["Overall display"],
+    "type": "string",
+    "description": "Whether to add a ResizeObserver to the container div (\"passive\") and additionally make it resizable (\"horizontal\", \"vertical\", \"both\"). In any case, if the container div has CSS \"overflow:visible;\" it will be changed to \"overflow:hidden;\" to make CSS resizing possible. Note that this is distinct from resizing the graph when the window size changes, which is always active; this feature adds user-resizable “handles” to the container div."
+  },
   "zoomCallback": {
     "default": "null",
     "labels": ["Callbacks"],
     "type": "function(minDate, maxDate, yRanges)",
     "parameters": [
-      [ "minDate" , "milliseconds since epoch" ],
-      [ "maxDate" , "milliseconds since epoch." ],
-      [ "yRanges" , "is an array of [bottom, top] pairs, one for each y-axis." ]
+      ["minDate", "milliseconds since epoch"],
+      ["maxDate", "milliseconds since epoch."],
+      ["yRanges", "is an array of [bottom, top] pairs, one for each y-axis."]
     ],
     "description": "A function to call when the zoom window is changed (either by zooming in or out). When animatedZooms is set, zoomCallback is called once at the end of the transition (it will not be called for intermediate frames)."
   },
   "pointClickCallback": {
-    "snippet": "function(e, point){<br>&nbsp;&nbsp;alert(point);<br>}",
+    "snippet": "function(e, point){<br>  alert(point);<br>}",
     "default": "null",
     "labels": ["Callbacks", "Interactive Elements"],
     "type": "function(e, point)",
     "parameters": [
-      [ "e" , "the event object for the click" ],
-      [ "point" , "the point that was clicked See <a href='#point_properties'>Point properties</a> for details" ]
+      ["e", "the event object for the click"],
+      ["point", "the point that was clicked See <a href='#point_properties'>Point properties</a> for details"]
     ],
     "description": "A function to call when a data point is clicked. and the point that was clicked."
   },
@@ -108,15 +119,15 @@ OPTIONS_REFERENCE =  // <JSON>
   "colors": {
     "default": "(see description)",
     "labels": ["Data Series Colors"],
-    "type": "array<string>",
+    "type": "Array of strings",
     "example": "['red', '#00FF00']",
-    "description": "List of colors for the data series. These can be of the form \"#AABBCC\" or \"rgb(255,100,200)\" or \"yellow\", etc. If not specified, equally-spaced points around a color wheel are used. Overridden by the 'color' option."
+    "description": "List of colors for the data series. These can be of the form \"#AABBCC\" or \"rgb(255,100,200)\" or \"yellow\", etc. If not specified, equally-spaced points around a color wheel are used. Overridden by the “color” option."
   },
   "connectSeparatedPoints": {
     "default": "false",
     "labels": ["Data Line display"],
     "type": "boolean",
-    "description": "Usually, when Dygraphs encounters a missing value in a data series, it interprets this as a gap and draws it as such. If, instead, the missing values represents an x-value for which only a different series has data, then you'll want to connect the dots by setting this to true. To explicitly include a gap with this option set, use a value of NaN."
+    "description": "Usually, when Dygraphs encounters a missing value in a data series, it interprets this as a gap and draws it as such. If, instead, the missing values represents an x-value for which only a different series has data, then you’ll want to connect the dots by setting this to true. To explicitly include a gap with this option set, use a value of NaN."
   },
   "highlightCallback": {
     "default": "null",
@@ -126,7 +137,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "parameters": [
       ["event", "the JavaScript mousemove event"],
       ["x", "the x-coordinate of the highlighted points"],
-      ["points", "an array of highlighted points: <code>[ {name: 'series', yval: y-value}, &hellip; ]</code>"],
+      ["points", "an array of highlighted points: <code>[ {name: 'series', yval: y-value}, … ]</code>"],
       ["row", "integer index of the highlighted row in the data table, starting from 0"],
       ["seriesName", "name of the highlighted series, only present if highlightSeriesOpts is set."]
     ]
@@ -134,16 +145,16 @@ OPTIONS_REFERENCE =  // <JSON>
   "drawHighlightPointCallback": {
     "default": "null",
     "labels": ["Data Line display"],
-    "type": "function(g, seriesName, canvasContext, cx, cy, color, pointSize)",
+    "type": "function(g, seriesName, canvasContext, cx, cy, color, pointSize, idx)",
     "parameters": [
-      [ "g" , "the reference graph" ],
-      [ "seriesName" , "the name of the series" ],
-      [ "canvasContext" , "the canvas to draw on" ],
-      [ "cx" , "center x coordinate" ],
-      [ "cy" , "center y coordinate" ],
-      [ "color" , "series color" ],
-      [ "pointSize" , "the radius of the image." ],
-      [ "idx" , "the row-index of the point in the data."]
+      ["g", "the reference graph"],
+      ["seriesName", "the name of the series"],
+      ["canvasContext", "the canvas to draw on"],
+      ["cx", "center x coordinate"],
+      ["cy", "center y coordinate"],
+      ["color", "series color"],
+      ["pointSize", "the radius of the image."],
+      ["idx", "the row-index of the point in the data."]
     ],
     "description": "Draw a custom item when a point is highlighted.  Default is a small dot matching the series color. This method should constrain drawing to within pointSize pixels from (cx, cy) Also see <a href='#drawPointCallback'>drawPointCallback</a>"
   },
@@ -151,7 +162,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "null",
     "labels": ["Interactive Elements"],
     "type": "Object",
-    "description": "When set, the options from this object are applied to the timeseries closest to the mouse pointer for interactive highlighting. See also 'highlightCallback'. Example: highlightSeriesOpts: { strokeWidth: 3 }."
+    "description": "When set, the options from this object are applied to the timeseries closest to the mouse pointer for interactive highlighting. See also “highlightCallback”. Example: highlightSeriesOpts: { strokeWidth: 3 }."
   },
   "highlightSeriesBackgroundAlpha": {
     "default": "0.5",
@@ -163,7 +174,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "rgb(255, 255, 255)",
     "labels": ["Interactive Elements"],
     "type": "string",
-    "description": "Sets the background color used to fade out the series in conjunction with 'highlightSeriesBackgroundAlpha'."
+    "description": "Sets the background color used to fade out the series in conjunction with “highlightSeriesBackgroundAlpha”."
   },
   "includeZero": {
     "default": "false",
@@ -182,7 +193,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Callbacks"],
     "type": "function(event)",
     "parameters": [
-      [ "event" , "the mouse event" ]
+      ["event", "the mouse event"]
     ],
     "description": "When set, this callback gets called every time the user stops highlighting any point by mousing out of the graph."
   },
@@ -201,10 +212,10 @@ OPTIONS_REFERENCE =  // <JSON>
   "valueFormatter": {
     "default": "Depends on the type of your data.",
     "labels": ["Legend", "Value display/formatting"],
-    "type": "function(num or millis, opts, seriesName, dygraph, row, col)",
+    "type": "function(num_or_millis, opts, seriesName, dygraph, row, col)",
     "description": "Function to provide a custom display format for the values displayed on mouseover. This does not affect the values that appear on tick marks next to the axes. To format those, see axisLabelFormatter. This is usually set on a <a href='per-axis.html'>per-axis</a> basis. .",
     "parameters": [
-      ["num_or_millis", "The value to be formatted. This is always a number. For date axes, it's millis since epoch. You can call new Date(millis) to get a Date object."],
+      ["num_or_millis", "The value to be formatted. This is always a number. For date axes, it’s millis since epoch. You can call new Date(millis) to get a Date object."],
       ["opts", "This is a function you can call to access various options (e.g. opts('labelsKMB')). It returns per-axis values for the option when available."],
       ["seriesName", "The name of the series from which the point came, e.g. 'X', 'Y', 'A', etc."],
       ["dygraph", "The dygraph object for which the formatting is being done"],
@@ -223,10 +234,10 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Annotations"],
     "type": "function(annotation, point, dygraph, event)",
     "parameters": [
-      [ "annotation" , "the annotation left" ],
-      [ "point" , "the point associated with the annotation" ],
-      [ "dygraph" , "the reference graph" ],
-      [ "event" , "the mouse event" ]
+      ["annotation", "the annotation left"],
+      ["point", "the point associated with the annotation"],
+      ["dygraph", "the reference graph"],
+      ["event", "the mouse event"]
     ],
     "description": "If provided, this function is called whenever the user mouses out of an annotation."
   },
@@ -235,10 +246,10 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Annotations"],
     "type": "function(annotation, point, dygraph, event)",
     "parameters": [
-      [ "annotation" , "the annotation left" ],
-      [ "point" , "the point associated with the annotation" ],
-      [ "dygraph" , "the reference graph" ],
-      [ "event" , "the mouse event" ]
+      ["annotation", "the annotation left"],
+      ["point", "the point associated with the annotation"],
+      ["dygraph", "the reference graph"],
+      ["event", "the mouse event"]
     ],
     "description": "If provided, this function is called whenever the user clicks on an annotation."
   },
@@ -247,10 +258,10 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Annotations"],
     "type": "function(annotation, point, dygraph, event)",
     "parameters": [
-      [ "annotation" , "the annotation left" ],
-      [ "point" , "the point associated with the annotation" ],
-      [ "dygraph" , "the reference graph" ],
-      [ "event" , "the mouse event" ]
+      ["annotation", "the annotation left"],
+      ["point", "the point associated with the annotation"],
+      ["dygraph", "the reference graph"],
+      ["event", "the mouse event"]
     ],
     "description": "If provided, this function is called whenever the user double-clicks on an annotation."
   },
@@ -259,8 +270,8 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Callbacks"],
     "type": "function(dygraph, is_initial)",
     "parameters": [
-      [ "dygraph" , "The graph being drawn" ],
-      [ "is_initial" , "True if this is the initial draw, false for subsequent draws." ]
+      ["dygraph", "The graph being drawn"],
+      ["is_initial", "True if this is the initial draw, false for subsequent draws."]
     ],
     "description": "When set, this callback gets called every time the dygraph is drawn. This includes the initial draw, after zooming and repeatedly while panning."
   },
@@ -268,7 +279,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["Value display/formatting"],
     "type": "boolean",
-    "description": "Show k/M/G for kilo/Mega/Giga on y-axis. This is different than <code>labelsKMB</code> in that it uses base 2, not 10."
+    "description": "Show Ki/Mi/Gi for powers of 1024 on y-axis. If used together with <code>labelsKMB</code> (deprecated), K/M/G are used instead."
   },
   "delimiter": {
     "default": ",",
@@ -287,9 +298,9 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Callbacks"],
     "type": "function(context, area, dygraph)",
     "parameters": [
-      [ "context" , "the canvas drawing context on which to draw" ],
-      [ "area" , "An object with {x,y,w,h} properties describing the drawing area." ],
-      [ "dygraph" , "the reference graph" ]
+      ["context", "the canvas drawing context on which to draw"],
+      ["area", "An object with {x,y,w,h} properties describing the drawing area."],
+      ["dygraph", "the reference graph"]
     ],
     "description": "When set, this callback gets called before the chart is drawn. It details on how to use this."
   },
@@ -303,7 +314,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "(devicePixelRatio / context.backingStoreRatio)",
     "labels": ["Overall display"],
     "type": "float",
-    "description": "Overrides the pixel ratio scaling factor for the canvas's 2d context. Ordinarily, this is set to the devicePixelRatio / (context.backingStoreRatio || 1), so on mobile devices, where the devicePixelRatio can be somewhere around 3, performance can be improved by overriding this value to something less precise, like 1, at the expense of resolution."
+    "description": "Overrides the pixel ratio scaling factor for the canvas’ 2d context. Ordinarily, this is set to the devicePixelRatio / (context.backingStoreRatio || 1), so on mobile devices, where the devicePixelRatio can be somewhere around 3, performance can be improved by overriding this value to something less precise, like 1, at the expense of resolution."
   },
   "interactionModel": {
     "default": "...",
@@ -314,16 +325,16 @@ OPTIONS_REFERENCE =  // <JSON>
   "ticker": {
     "default": "Dygraph.dateTicker or Dygraph.numericTicks",
     "labels": ["Axis display"],
-    "type": "function(min, max, pixels, opts, dygraph, vals) -> [{v: ..., label: ...}, ...]",
+    "type": "function(min, max, pixels, opts, dygraph, vals) → [{v: …, label: …}, …]",
     "parameters": [
-      [ "min" , "" ],
-      [ "max" , "" ],
-      [ "pixels" , "" ],
-      [ "opts" , "" ],
-      [ "dygraph" , "the reference graph" ],
-      [ "vals" , "" ]
+      ["min", ""],
+      ["max", ""],
+      ["pixels", ""],
+      ["opts", ""],
+      ["dygraph", "the reference graph"],
+      ["vals", ""]
     ],
-    "description": "This lets you specify an arbitrary function to generate tick marks on an axis. The tick marks are an array of (value, label) pairs. The built-in functions go to great lengths to choose good tick marks so, if you set this option, you'll most likely want to call one of them and modify the result. See dygraph-tickers.js for an extensive discussion. This is set on a <a href='per-axis.html'>per-axis</a> basis."
+    "description": "This lets you specify an arbitrary function to generate tick marks on an axis. The tick marks are an array of (value, label) pairs. The built-in functions go to great lengths to choose good tick marks so, if you set this option, you’ll most likely want to call one of them and modify the result. See dygraph-tickers.js for an extensive discussion. This is set on a <a href='per-axis.html'>per-axis</a> basis."
   },
   "xAxisHeight": {
     "default": "(null)",
@@ -353,7 +364,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "null",
     "labels": ["Legend"],
     "type": "DOM element or string",
-    "example": "<code style='font-size: small'>document.getElementById('foo')</code>or<code>'foo'",
+    "example": "<code style='font-size: small'>document.getElementById('foo')</code> or <code>'foo'</code>",
     "description": "Show data labels in an external div, rather than on the graph.  This value can either be a div element or a div id."
   },
   "fractions": {
@@ -378,7 +389,7 @@ OPTIONS_REFERENCE =  // <JSON>
   "strokePattern": {
     "default": "null",
     "labels": ["Data Line display"],
-    "type": "array<integer>",
+    "type": "Array of integers",
     "example": "[10, 2, 5, 2]",
     "description": "A custom pattern array where the even index is a draw and odd is a space in pixels. If null then it draws a solid line. The array should have a even length as any odd lengthed array could be expressed as a smaller even length array. This is used to create dashed lines."
   },
@@ -406,7 +417,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["Data Line display"],
     "type": "boolean",
-    "description": "Should the area underneath the graph be filled? This option is not compatible with error bars. This may be set on a <a href='per-axis.html'>per-series</a> basis."
+    "description": "Should the area underneath the graph be filled? This option is not compatible with <tt>customBars</tt> nor <tt>errorBars</tt>. This may be set on a <a href='per-axis.html'>per-series</a> basis."
   },
   "highlightCircleSize": {
     "default": "3",
@@ -418,12 +429,12 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "rgb(128,128,128)",
     "labels": ["Grid"],
     "type": "red, blue",
-    "description": "The color of the gridlines. This may be set on a per-axis basis to define each axis' grid separately."
+    "description": "The color of the gridlines. This may be set on a per-axis basis to define each axis’ grid separately."
   },
   "gridLinePattern": {
     "default": "null",
     "labels": ["Grid"],
-    "type": "array<integer>",
+    "type": "Array of integers",
     "example": "[10, 2, 5, 2]",
     "description": "A custom pattern array where the even index is a draw and odd is a space in pixels. If null then it draws a solid line. The array should have a even length as any odd lengthed array could be expressed as a smaller even length array. This is used to create dashed gridlines."
   },
@@ -456,16 +467,28 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "onmouseover",
     "labels": ["Legend"],
     "type": "string",
-    "description": "When to display the legend. By default, it only appears when a user mouses over the chart. Set it to \"always\" to always display a legend of some sort. When set to \"follow\", legend follows highlighted points."
+    "description": "When to display the legend. By default, it only appears when a user mouses over the chart. Set it to \"always\" to always display a legend of some sort, \"never\" to hide it. When set to \"follow\", legend follows highlighted points."
+  },
+  "legendFollowOffsetX": {
+    "default": "50",
+    "labels": ["Legend"],
+    "type": "integer",
+    "description": "Number of pixels to use as horizontal offset from the point for a “floating” legend (\"follow\" mode). This should be positive (to the right) because the legend flips over to the left side if it’s too wide."
+  },
+  "legendFollowOffsetY": {
+    "default": "-50",
+    "labels": ["Legend"],
+    "type": "integer",
+    "description": "Number of pixels to use as vertical offset from the point for a “floating” legend (\"follow\" mode)."
   },
   "legendFormatter": {
     "default": "null",
     "labels": ["Legend"],
-    "type": "function(data): string",
+    "type": "function(data): string or DocumentFragment node",
     "params": [
-      [ "data", "An object containing information about the selection (or lack of a selection). This includes formatted values and series information. See <a href=\"https://github.com/danvk/dygraphs/pull/683\">here</a> for sample values." ]
+      ["data", "An object containing information about the selection (or lack of a selection). This includes formatted values and series information. See <a href=\"legend-formatter.md\"><tt>docs/legend-formatter.md</tt></a> (<a href=\"https://github.com/danvk/dygraphs/blob/master/docs/legend-formatter.md\">online</a>) for sample values."]
     ],
-    "description": "Set this to supply a custom formatter for the legend. See <a href=\"https://github.com/danvk/dygraphs/pull/683\">this comment</a> and the <a href=\"tests/legend-formatter.html\">legendFormatter demo</a> for usage."
+    "description": "Set this to supply a custom formatter for the legend. See <a href=\"legend-formatter.md\"><tt>docs/legend-formatter.md</tt></a> (<a href=\"https://github.com/danvk/dygraphs/blob/master/docs/legend-formatter.md\">online</a>) and the <a href=\"tests/legend-formatter.html\">legendFormatter demo</a> for usage."
   },
   "labelsShowZeroValues": {
     "default": "true",
@@ -489,7 +512,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["Value display/formatting"],
     "type": "boolean",
-    "description": "Show K/M/B for thousands/millions/billions on y-axis."
+    "description": "Show k/M/B for thousands/millions/billions on y-axis."
   },
   "rightGap": {
     "default": "5",
@@ -501,7 +524,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["Axis display"],
     "type": "boolean",
-    "description": "When set, draw the X axis at the Y=0 position and the Y axis at the X=0 position if those positions are inside the graph's visible area. Otherwise, draw the axes at the bottom or left graph edge as usual."
+    "description": "When set, draw the X axis at the Y=0 position and the Y axis at the X=0 position if those positions are inside the graph’s visible area. Otherwise, draw the axes at the bottom or left graph edge as usual."
   },
   "xRangePad": {
     "default": "0",
@@ -518,38 +541,38 @@ OPTIONS_REFERENCE =  // <JSON>
   "axisLabelFormatter": {
     "default": "Depends on the data type",
     "labels": ["Axis display"],
-    "type": "function(number or Date, granularity, opts, dygraph)",
+    "type": "function(number_or_Date, granularity, opts, dygraph)",
     "parameters": [
-      [ "number or date" , "Either a number (for a numeric axis) or a Date object (for a date axis)" ],
-      [ "granularity" , "specifies how fine-grained the axis is. For date axes, this is a reference to the time granularity enumeration, defined in dygraph-tickers.js, e.g. Dygraph.WEEKLY." ],
-      [ "opts" , "a function which provides access to various options on the dygraph, e.g. opts('labelsKMB')." ],
-      [ "dygraph" , "the referenced graph" ]
+      ["number_or_Date", "Either a number (for a numeric axis) or a Date object (for a date axis)"],
+      ["granularity", "specifies how fine-grained the axis is. For date axes, this is a reference to the time granularity enumeration, defined in dygraph-tickers.js, e.g. Dygraph.WEEKLY."],
+      ["opts", "a function which provides access to various options on the dygraph, e.g. opts('labelsKMB')."],
+      ["dygraph", "the referenced graph"]
     ],
     "description": "Function to call to format the tick values that appear along an axis. This is usually set on a <a href='per-axis.html'>per-axis</a> basis."
   },
   "clickCallback": {
-    "snippet": "function(e, date_millis){<br>&nbsp;&nbsp;alert(new Date(date_millis));<br>}",
+    "snippet": "function(e, date_millis){<br>  alert(new Date(date_millis));<br>}",
     "default": "null",
     "labels": ["Callbacks"],
     "type": "function(e, x, points)",
     "parameters": [
-      [ "e" , "The event object for the click" ],
-      [ "x" , "The x value that was clicked (for dates, this is milliseconds since epoch)" ],
-      [ "points" , "The closest points along that date. See <a href='#point_properties'>Point properties</a> for details." ]
+      ["e", "The event object for the click"],
+      ["x", "The x value that was clicked (for dates, this is milliseconds since epoch)"],
+      ["points", "The closest points along that date. See <a href='#point_properties'>Point properties</a> for details."]
     ],
     "description": "A function to call when the canvas is clicked."
   },
   "labels": {
     "default": "[\"X\", \"Y1\", \"Y2\", ...]*",
     "labels": ["Legend"],
-    "type": "array<string>",
-    "description": "A name for each data series, including the independent (X) series. For CSV files and DataTable objections, this is determined by context. For raw data, this must be specified. If it is not, default values are supplied and a warning is logged."
+    "type": "Array of strings",
+    "description": "A distinct name for each data series, including the independent (X) series. For CSV files and DataTable objects, this is determined by context. For raw data, this must be specified. If it is not, default values are supplied and a warning is logged. Make sure no two names are the same!"
   },
   "dateWindow": {
     "default": "Full range of the input is shown",
     "labels": ["Axis display"],
     "type": "Array of two numbers",
-    "example": "[<br>&nbsp;&nbsp;Date.parse('2006-01-01'),<br>&nbsp;&nbsp;(new Date()).valueOf()<br>]",
+    "example": "[<br>  Date.parse('2006-01-01'),<br>  (new Date()).valueOf()<br>]",
     "description": "Initially zoom in on a section of the graph. Is of the form [earliest, latest], where earliest/latest are milliseconds since epoch. If the data for the x-axis is numeric, the values in dateWindow must also be numbers."
   },
   "showRoller": {
@@ -568,7 +591,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["CSV parsing", "Error Bars"],
     "type": "boolean",
-    "description": "When set, parse each CSV cell as \"low;middle;high\". Error bars will be drawn for each point between low and high, with the series itself going through middle."
+    "description": "When set, parse each CSV cell as \"low;middle;high\". Custom high/low bands will be drawn for each point between low and high, with the series itself going through middle."
   },
   "colorValue": {
     "default": "1.0",
@@ -586,7 +609,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "false",
     "labels": ["Annotations"],
     "type": "boolean",
-    "description": "Only applies when Dygraphs is used as a GViz chart. Causes string columns following a data series to be interpreted as annotations on points in that series. This is the same format used by Google's AnnotatedTimeLine chart."
+    "description": "Only applies when Dygraphs is used as a GViz chart. Causes string columns following a data series to be interpreted as annotations on points in that series. This is the same format used by Google’s AnnotatedTimeLine chart."
   },
   "panEdgeFraction": {
     "default": "null",
@@ -598,37 +621,37 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Chart labels"],
     "type": "string",
     "default": "null",
-    "description": "Text to display above the chart. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the 'dygraph-label' or 'dygraph-title' classes."
+    "description": "Text to display above the chart. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the “dygraph-label” or “dygraph-title” classes."
   },
   "titleHeight": {
     "default": "18",
     "labels": ["Chart labels"],
     "type": "integer",
-    "description": "Height of the chart title, in pixels. This also controls the default font size of the title. If you style the title on your own, this controls how much space is set aside above the chart for the title's div."
+    "description": "Height of the chart title, in pixels. This also controls the default font size of the title. If you style the title on your own, this controls how much space is set aside above the chart for the title’s div."
   },
   "xlabel": {
     "labels": ["Chart labels"],
     "type": "string",
     "default": "null",
-    "description": "Text to display below the chart's x-axis. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the 'dygraph-label' or 'dygraph-xlabel' classes."
+    "description": "Text to display below the chart’s x-axis. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the “dygraph-label” or “dygraph-xlabel” classes."
   },
   "xLabelHeight": {
     "labels": ["Chart labels"],
     "type": "integer",
     "default": "18",
-    "description": "Height of the x-axis label, in pixels. This also controls the default font size of the x-axis label. If you style the label on your own, this controls how much space is set aside below the chart for the x-axis label's div."
+    "description": "Height of the x-axis label, in pixels. This also controls the default font size of the x-axis label. If you style the label on your own, this controls how much space is set aside below the chart for the x-axis label’s div."
   },
   "ylabel": {
     "labels": ["Chart labels"],
     "type": "string",
     "default": "null",
-    "description": "Text to display to the left of the chart's y-axis. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the 'dygraph-label' or 'dygraph-ylabel' classes. The text will be rotated 90 degrees by default, so CSS rules may behave in unintuitive ways. No additional space is set aside for a y-axis label. If you need more space, increase the width of the y-axis tick labels using the yAxisLabelWidth option. If you need a wider div for the y-axis label, either style it that way with CSS (but remember that it's rotated, so width is controlled by the 'height' property) or set the yLabelWidth option."
+    "description": "Text to display to the left of the chart’s y-axis. You can supply any HTML for this value, not just text. If you wish to style it using CSS, use the “dygraph-label” or “dygraph-ylabel” classes. The text will be rotated 90 degrees by default, so CSS rules may behave in unintuitive ways. No additional space is set aside for a y-axis label. If you need more space, increase the width of the y-axis tick labels using the per-axis <tt>axisLabelWidth</tt> option on the y axis. If you need a wider div for the y-axis label, either style it that way with CSS (but remember that it’s rotated, so width is controlled by the “height” property) or set the yLabelWidth option."
   },
   "y2label": {
     "labels": ["Chart labels"],
     "type": "string",
     "default": "null",
-    "description": "Text to display to the right of the chart's secondary y-axis. This label is only displayed if a secondary y-axis is present. See <a href='http://dygraphs.com/tests/two-axes.html'>this test</a> for an example of how to do this. The comments for the 'ylabel' option generally apply here as well. This label gets a 'dygraph-y2label' instead of a 'dygraph-ylabel' class."
+    "description": "Text to display to the right of the chart’s secondary y-axis. This label is only displayed if a secondary y-axis is present. See <a href='tests/two-axes.html'>this test</a> for an example of how to do this. The comments for the “ylabel” option generally apply here as well. This label gets a “dygraph-y2label” instead of a “dygraph-ylabel” class."
   },
   "yLabelWidth": {
     "labels": ["Chart labels"],
@@ -640,77 +663,77 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "true for x and y, false for y2",
     "labels": ["Grid"],
     "type": "boolean",
-    "description" : "Whether to display gridlines in the chart. This may be set on a per-axis basis to define the visibility of each axis' grid separately."
+    "description": "Whether to display gridlines in the chart. This may be set on a per-axis basis to define the visibility of each axis’ grid separately."
   },
   "independentTicks": {
     "default": "true for y, false for y2",
     "labels": ["Axis display", "Grid"],
     "type": "boolean",
-    "description" : "Only valid for y and y2, has no effect on x: This option defines whether the y axes should align their ticks or if they should be independent. Possible combinations: 1.) y=true, y2=false (default): y is the primary axis and the y2 ticks are aligned to the the ones of y. (only 1 grid) 2.) y=false, y2=true: y2 is the primary axis and the y ticks are aligned to the the ones of y2. (only 1 grid) 3.) y=true, y2=true: Both axis are independent and have their own ticks. (2 grids) 4.) y=false, y2=false: Invalid configuration causes an error."
+    "description": "Only valid for y and y2, has no effect on x: This option defines whether the y axes should align their ticks or if they should be independent. Possible combinations: [1.] y=true, y2=false (default): y is the primary axis and the y2 ticks are aligned to the the ones of y. (only 1 grid) [2.] y=false, y2=true: y2 is the primary axis and the y ticks are aligned to the the ones of y2. (only 1 grid) [3.] y=true, y2=true: Both axis are independent and have their own ticks. (2 grids) [4.] y=false, y2=false: Invalid configuration causes an error."
   },
   "drawAxis": {
     "default": "true for x and y, false for y2",
     "labels": ["Axis display"],
     "type": "boolean",
-    "description" : "Whether to draw the specified axis. This may be set on a per-axis basis to define the visibility of each axis separately. Setting this to false also prevents axis ticks from being drawn and reclaims the space for the chart grid/lines."
+    "description": "Whether to draw the specified axis. This may be set on a per-axis basis to define the visibility of each axis separately. Setting this to false also prevents axis ticks from being drawn and reclaims the space for the chart grid/lines."
   },
   "gridLineWidth": {
     "default": "0.3",
     "labels": ["Grid"],
     "type": "float",
-    "description" : "Thickness (in pixels) of the gridlines drawn under the chart. The vertical/horizontal gridlines can be turned off entirely by using the drawGrid option. This may be set on a per-axis basis to define each axis' grid separately."
+    "description": "Thickness (in pixels) of the gridlines drawn under the chart. The vertical/horizontal gridlines can be turned off entirely by using the drawGrid option. This may be set on a per-axis basis to define each axis’ grid separately."
   },
   "axisLineWidth": {
     "default": "0.3",
     "labels": ["Axis display"],
     "type": "float",
-    "description" : "Thickness (in pixels) of the x- and y-axis lines."
+    "description": "Thickness (in pixels) of the x- and y-axis lines."
   },
   "axisLineColor": {
     "default": "black",
     "labels": ["Axis display"],
     "type": "string",
-    "description" : "Color of the x- and y-axis lines. Accepts any value which the HTML canvas strokeStyle attribute understands, e.g. 'black' or 'rgb(0, 100, 255)'."
+    "description": "Color of the x- and y-axis lines. Accepts any value which the HTML canvas strokeStyle attribute understands, e.g. 'black' or 'rgb(0, 100, 255)'."
   },
   "fillAlpha": {
     "default": "0.15",
     "labels": ["Error Bars", "Data Series Colors"],
     "type": "float (0.0 - 1.0)",
-    "description" : "Error bars (or custom bars) for each series are drawn in the same color as the series, but with partial transparency. This sets the transparency. A value of 0.0 means that the error bars will not be drawn, whereas a value of 1.0 means that the error bars will be as dark as the line for the series itself. This can be used to produce chart lines whose thickness varies at each point."
+    "description": "Custom or sigma-based high/low bands for each series are drawn in the same colour as the series, but with partial transparency. This sets the transparency. A value of 0.0 means that the bands will not be drawn, whereas a value of 1.0 means that the bands will be as dark as the line for the series itself. This can be used to produce chart lines whose thickness varies at each point."
   },
   "axisLabelWidth": {
     "default": "50 (y-axis), 60 (x-axis)",
     "labels": ["Axis display", "Chart labels"],
     "type": "integer",
-    "description" : "Width (in pixels) of the containing divs for x- and y-axis labels. For the y-axis, this also controls the width of the y-axis. Note that for the x-axis, this is independent from pixelsPerLabel, which controls the spacing between labels."
+    "description": "Width (in pixels) of the containing divs for x- and y-axis labels. For the y-axis, this also controls the width of the y-axis. Note that for the x-axis, this is independent from pixelsPerLabel, which controls the spacing between labels."
   },
-  "sigFigs" : {
+  "sigFigs": {
     "default": "null",
     "labels": ["Value display/formatting"],
     "type": "integer",
-    "description": "By default, dygraphs displays numbers with a fixed number of digits after the decimal point. If you'd prefer to have a fixed number of significant figures, set this option to that number of sig figs. A value of 2, for instance, would cause 1 to be display as 1.0 and 1234 to be displayed as 1.23e+3."
+    "description": "By default, dygraphs displays numbers with a fixed number of digits after the decimal point. If you’d prefer to have a fixed number of significant figures, set this option to that number of sig figs. A value of 2, for instance, would cause 1 to be display as 1.0 and 1234 to be displayed as 1.23e+3."
   },
-  "digitsAfterDecimal" : {
+  "digitsAfterDecimal": {
     "default": "2",
     "labels": ["Value display/formatting"],
     "type": "integer",
-    "description": "Unless it's run in scientific mode (see the <code>sigFigs</code> option), dygraphs displays numbers with <code>digitsAfterDecimal</code> digits after the decimal point. Trailing zeros are not displayed, so with a value of 2 you'll get '0', '0.1', '0.12', '123.45' but not '123.456' (it will be rounded to '123.46'). Numbers with absolute value less than 0.1^digitsAfterDecimal (i.e. those which would show up as '0.00') will be displayed in scientific notation."
+    "description": "Unless it’s run in scientific mode (see the <code>sigFigs</code> option), dygraphs displays numbers with <code>digitsAfterDecimal</code> digits after the decimal point. Trailing zeros are not displayed, so with a value of 2 you’ll get '0', '0.1', '0.12', '123.45' but not '123.456' (it will be rounded to '123.46'). Numbers with absolute value less than 0.1^digitsAfterDecimal (i.e. those which would show up as '0.00') will be displayed in scientific notation."
   },
-  "maxNumberWidth" : {
+  "maxNumberWidth": {
     "default": "6",
     "labels": ["Value display/formatting"],
     "type": "integer",
-    "description": "When displaying numbers in normal (not scientific) mode, large numbers will be displayed with many trailing zeros (e.g. 100000000 instead of 1e9). This can lead to unwieldy y-axis labels. If there are more than <code>maxNumberWidth</code> digits to the left of the decimal in a number, dygraphs will switch to scientific notation, even when not operating in scientific mode. If you'd like to see all those digits, set this to something large, like 20 or 30."
+    "description": "When displaying numbers in normal (not scientific) mode, large numbers will be displayed with many trailing zeros (e.g. 100000000 instead of 1e9). This can lead to unwieldy y-axis labels. If there are more than <code>maxNumberWidth</code> digits to the left of the decimal in a number, dygraphs will switch to scientific notation, even when not operating in scientific mode. If you’d like to see all those digits, set this to something large, like 20 or 30."
   },
   "file": {
     "default": "(set when constructed)",
     "labels": ["Data"],
     "type": "string (URL of CSV or CSV), GViz DataTable or 2D Array",
-    "description": "Sets the data being displayed in the chart. This can only be set when calling updateOptions; it cannot be set from the constructor. For a full description of valid data formats, see the <a href='http://dygraphs.com/data.html'>Data Formats</a> page."
+    "description": "Sets the data being displayed in the chart. This can only be set when calling updateOptions; it cannot be set from the constructor. For a full description of valid data formats, see the <a href='data.html'>Data Formats</a> page."
   },
   "timingName": {
     "default": "null",
-    "labels": [ "Debugging", "Deprecated" ],
+    "labels": ["Debugging", "Deprecated"],
     "type": "string",
     "description": "Set this option to log timing information. The value of the option will be logged along with the timimg, so that you can distinguish multiple dygraphs on the same page."
   },
@@ -780,11 +803,17 @@ OPTIONS_REFERENCE =  // <JSON>
     "type": "float (0.0 - 1.0)",
     "description": "The transparency of the veil that is drawn over the unselected portions of the range selector mini plot. A value of 0 represents full transparency and the unselected portions of the mini plot will appear as normal. A value of 1 represents full opacity and the unselected portions of the mini plot will be hidden."
   },
+  "rangeSelectorVeilColour": {
+    "default": "null",
+    "labels": ["Range Selector"],
+    "type": "string",
+    "description": "The fillStyle for the veil of the range selector (e.g. \"rgba(240, 240, 240, 0.6)\"); if set, the rangeSelectorAlpha option is ignored."
+  },
   "showInRangeSelector": {
     "default": "null",
     "labels": ["Range Selector"],
     "type": "boolean",
-    "description": "Mark this series for inclusion in the range selector. The mini plot curve will be an average of all such series. If this is not specified for any series, the default behavior is to average all the visible series. Setting it for one series will result in that series being charted alone in the range selector. Once it's set for a single series, it needs to be set for all series which should be included (regardless of visibility)."
+    "description": "Mark this series for inclusion in the range selector. The mini plot curve will be an average of all such series. If this is not specified for any series, the default behavior is to average all the visible series. Setting it for one series will result in that series being charted alone in the range selector. Once it’s set for a single series, it needs to be set for all series which should be included (regardless of visibility)."
   },
   "animatedZooms": {
     "default": "false",
@@ -802,7 +831,7 @@ OPTIONS_REFERENCE =  // <JSON>
     "default": "null",
     "labels": ["Configuration"],
     "type": "Object",
-    "description": "Defines per-axis options. Valid keys are 'x', 'y' and 'y2'. Only some options may be set on a per-axis basis. If an option may be set in this way, it will be noted on this page. See also documentation on <a href='http://dygraphs.com/per-axis.html'>per-series and per-axis options</a>."
+    "description": "Defines per-axis options. Valid keys are 'x', 'y' and 'y2'. Only some options may be set on a per-axis basis. If an option may be set in this way, it will be noted on this page. See also documentation on <a href='per-axis.html'>per-series and per-axis options</a>."
   },
   "series": {
     "default": "null",
@@ -813,14 +842,14 @@ OPTIONS_REFERENCE =  // <JSON>
   "plugins": {
     "default": "[]",
     "labels": ["Configuration"],
-    "type": "Array<plugin>",
+    "type": "Array of plugins",
     "description": "Defines per-graph plugins. Useful for per-graph customization"
   },
   "dataHandler": {
     "default": "(depends on data)",
     "labels": ["Data"],
     "type": "Dygraph.DataHandler",
-    "description": "Custom DataHandler. This is an advanced customization. See http://bit.ly/151E7Aq."
+    "description": "Custom DataHandler. This is an advanced customization.See <a href='datahandler-proposal.pdf'><tt>docs/datahandler-proposal.pdf</tt></a>."
   },
   "selectMode": {
     "default": "closest-x",
@@ -836,51 +865,51 @@ OPTIONS_REFERENCE =  // <JSON>
 // most part, this just means that you should always use double quotes.
 
 // Do a quick sanity check on the options reference.
-var warn = function(msg) { if (window.console) window.console.warn(msg); };
-var flds = ['type', 'default', 'description'];
-var valid_cats = [
- 'Annotations',
- 'Axis display',
- 'Chart labels',
- 'CSV parsing',
- 'Callbacks',
- 'Data',
- 'Data Line display',
- 'Data Series Colors',
- 'Error Bars',
- 'Grid',
- 'Interactive Elements',
- 'Range Selector',
- 'Legend',
- 'Overall display',
- 'Rolling Averages',
- 'Series',
- 'Value display/formatting',
- 'Zooming',
- 'Debugging',
- 'Configuration',
- 'Deprecated'
-];
-var i;
-var cats = {};
-for (i = 0; i < valid_cats.length; i++) cats[valid_cats[i]] = true;
-
-for (var k in OPTIONS_REFERENCE) {
+const warn = function warn(msg) {
+  if (window.console)
+    window.console.warn(msg);
+};
+const flds = ['type', 'default', 'description'];
+const valid_cats =  // <JSON>
+{
+  "Annotations": "",
+  "Axis display": "",
+  "CSV parsing": "",
+  "Callbacks": "",
+  "Chart labels": "",
+  "Configuration": "",
+  "Data Line display": "",
+  "Data Series Colors": "",
+  "Data": "",
+  "Debugging": "",
+  "Deprecated": "",
+  "Error Bars": "These are actually high/low bands, not error bars; the misnomer is historic.",
+  "Grid": "",
+  "Interactive Elements": "",
+  "Legend": "",
+  "Overall display": "",
+  "Range Selector": "",
+  "Rolling Averages": "",
+  "Series": "",
+  "Value display/formatting": ""
+}
+;  // </JSON>
+for (let k in OPTIONS_REFERENCE) {
   if (!OPTIONS_REFERENCE.hasOwnProperty(k)) continue;
   var op = OPTIONS_REFERENCE[k];
-  for (i = 0; i < flds.length; i++) {
+  for (let i = 0; i < flds.length; i++) {
     if (!op.hasOwnProperty(flds[i])) {
       warn('Option ' + k + ' missing "' + flds[i] + '" property');
     } else if (typeof(op[flds[i]]) != 'string') {
       warn(k + '.' + flds[i] + ' must be of type string');
     }
   }
-  var labels = op.labels;
-  if (typeof(labels) !== 'object') {
+  let labels = op.labels;
+  if (!Array.isArray(labels)) {
     warn('Option "' + k + '" is missing a "labels": [...] option');
   } else {
-    for (i = 0; i < labels.length; i++) {
-      if (!cats.hasOwnProperty(labels[i])) {
+    for (let i = 0; i < labels.length; i++) {
+      if (!valid_cats.hasOwnProperty(labels[i])) {
         warn('Option "' + k + '" has label "' + labels[i] +
              '", which is invalid.');
       }
@@ -888,7 +917,6 @@ for (var k in OPTIONS_REFERENCE) {
   }
 }
 
-}
 }
 
 export default OPTIONS_REFERENCE;

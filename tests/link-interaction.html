@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>noise</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
     <script type="text/javascript" src="../dist/dygraph.js"></script>
+
     <style>
       a, a:visited {
         color: blue;
@@ -22,7 +27,7 @@
       <a href="#" onclick="pan(-1)">left</a>
       <a href="#" onclick="pan(+1)">right</a>
 
-    <script type="text/javascript">
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
       var r = [ ];
       var base_time = Date.parse("2008/07/01");
       var num = 24 * 0.25 * 365;
@@ -33,6 +38,8 @@
                ]);
       }
       var orig_range = [ r[0][0].valueOf(), r[r.length - 1][0].valueOf() ];
+
+    Dygraph.onDOMready(function onDOMready() {
       g = new Dygraph(
             document.getElementById("div_g"),
             r, {
@@ -44,6 +51,7 @@
               labels: ["Date", "a", "b"]
             }
           );
+    });
 
       var desired_range = null;
       function approach_range() {
@@ -84,6 +92,6 @@
         desired_range = [ w[0] + amount, w[1] + amount ];
         animate();
       }
-    </script>
+    //--><!]]></script>
   </body>
 </html>

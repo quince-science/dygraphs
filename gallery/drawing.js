@@ -1,4 +1,5 @@
 /*global Gallery,Dygraph,data */
+//galleryActive=true
 Gallery.register(
   'drawing',
   {
@@ -11,9 +12,7 @@ Gallery.register(
           "<div id='tool_pencil'></div>",
           "<div id='tool_eraser'></div>",
           "</div>",
-          "<div id='draw_div' style='width: 600px; height: 300px;'></div>",
-          "<p style='font-size: 10pt'>Toolbar/cursor icons are CC-licensed from ",
-          "<a href='http://www.fatcow.com/free-icons'>FatCow</a>.</p>"].join("\n");
+          "<div id='draw_div' style='width: 600px; height: 300px;'></div>"].join("\n");
     },
 
     run: function() {
@@ -105,9 +104,9 @@ Gallery.register(
 
         var dg_div = document.getElementById("draw_div");
         if (tool == 'pencil') {
-          dg_div.style.cursor = 'url(images/cursor-pencil.png) 2 30, auto';
+          dg_div.style.cursor = 'url(../common/cursor-pencil.png) 2 30, auto';
         } else if (tool == 'eraser') {
-          dg_div.style.cursor = 'url(images/cursor-eraser.png) 10 30, auto';
+          dg_div.style.cursor = 'url(../common/cursor-eraser.png) 10 30, auto';
         } else if (tool == 'zoom') {
           dg_div.style.cursor = 'crosshair';
         }
@@ -119,6 +118,9 @@ Gallery.register(
             valueRange: valueRange,
             labels: [ 'Date', 'Value' ],
             interactionModel: {
+              // the next line is required when using the
+              // defaultInteractionModel mousedown function.
+              willDestroyContextMyself: true,
               mousedown: function (event, g, context) {
                 if (tool == 'zoom') {
                   Dygraph.defaultInteractionModel.mousedown(event, g, context);
@@ -135,24 +137,25 @@ Gallery.register(
                 }
               },
               mousemove: function (event, g, context) {
-                if (tool == 'zoom') {
-                  Dygraph.defaultInteractionModel.mousemove(event, g, context);
-                } else {
+                // note that the defaultInteractionModel dynamically binds
+                // its own mousemove event inside the mousedown handler
+                if (tool != 'zoom') {
                   if (!isDrawing) return;
                   setPoint(event, g, context);
                 }
               },
               mouseup: function(event, g, context) {
-                if (tool == 'zoom') {
-                  Dygraph.defaultInteractionModel.mouseup(event, g, context);
-                } else {
+                // note that the defaultInteractionModel dynamically binds
+                // its own mouseup event inside the mousedown handler
+                if (tool != 'zoom') {
                   finishDraw();
                 }
               },
               mouseout: function(event, g, context) {
-                if (tool == 'zoom') {
-                  Dygraph.defaultInteractionModel.mouseout(event, g, context);
-                }
+                // note that the defaultInteractionModel does not use
+                // the mouseout event, instead it detects when the mouse
+                // is outside the chart using a dynamically bound
+                // mousemove event
               },
               dblclick: function(event, g, context) {
                 Dygraph.defaultInteractionModel.dblclick(event, g, context);

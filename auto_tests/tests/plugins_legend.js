@@ -44,7 +44,6 @@ it('testLegendEscape', function() {
   assert.equal(legendSpan.innerHTML, "&lt;script&gt;alert('XSS')&lt;/script&gt;");
 });
 
-
 it('should let labelsDiv be a string', function() {
   var labelsDiv = document.getElementById('label');
   var g = new Dygraph(graph, 'X,Y\n1,2\n', {labelsDiv: 'label'});
@@ -111,6 +110,32 @@ it('should use a legendFormatter', function() {
   assert.equal(calls[1].series[0].yHTML, '2');
   assert.equal(calls[1].series[0].isVisible, true);
   assert.equal(calls[2].series[0].y, undefined);
+});
+
+it('should use a legendFormatter which returns a DocumentFragment', function() {
+  var calls = [];
+  var labelsDiv = document.getElementById('label');
+  var g = new Dygraph(graph, 'X,Y\n1,2\n', {
+    color: 'red',
+    legend: 'always',
+    labelsDiv: labelsDiv,
+    legendFormatter: function(data) {
+      var fragment = document.createDocumentFragment();
+      var e = document.createElement('div');
+      e.innerText='Text Label';
+      fragment.appendChild(e);
+      calls.push(data);
+      return fragment;
+    }
+  });
+
+  assert(calls.length == 1);  // legend for no selected points
+
+  //check that labelsDiv has fragment children attached
+  assert.equal(labelsDiv.children.length, 1);
+  assert.equal(labelsDiv.children[0].nodeName, 'DIV');
+  assert.equal(labelsDiv.children[0].innerText, 'Text Label');
+
 });
 
 it('should work with highlight series', () => {

@@ -1,4 +1,5 @@
 /*global Gallery,Dygraph,data */
+//galleryActive=true
 Gallery.register(
   'highlighted-weekends',
   {
@@ -90,7 +91,7 @@ Gallery.register(
                 end_x_highlight = max_data_x;
               }
               highlight_period(start_x_highlight,end_x_highlight);
-              // calculate start of highlight for next Saturday 
+              // calculate start of highlight for next Saturday
               w += 7*24*3600*1000;
             }
           }

@@ -1,7 +1,7 @@
 /**
  * @license
  * Copyright 2006 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 // TODO(danvk): move the Dygraph definitions out of here once I closure-ify dygraphs.js
@@ -59,7 +59,7 @@ Dygraph.prototype.yAxisRange;
 Dygraph.prototype.yAxisRanges;
 
 /** @type {function(?number, ?number, ?number): Array.<?number>} */
-Dygraph.prototype.toDomCoords
+Dygraph.prototype.toDomCoords;
 
 /** @type {function(?number): ?number} */
 Dygraph.prototype.toDomXCoord;

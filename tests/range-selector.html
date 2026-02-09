@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>Temperatures with Range Selector</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
     <script type="text/javascript" src="data.js"></script>
+
     <style type="text/css">
     #bordered {
       border: 1px solid red;
@@ -39,7 +43,7 @@
     <div id="noroll" style="width:800px; height:320px;"></div>
 
     <h2 id="options">Range selector options</h2>
-    <p>Here's a view of how the various <a href="../options.html#Range%20Selector">range selector options</a> affect the display:</p>
+    <p>Here's a view of how the various <a href="../options.html#Range_20Selector">range selector options</a> affect the display:</p>
     <img width="954" height="354" src="range-selector-anatomy.png">
 
     <p>
@@ -64,7 +68,13 @@
     <p>Demo of range selector with stepPlot</p>
     <div id="stepplot" style="width:800px; height:320px;"></div>
 
-    <script type="text/javascript">
+    <p>
+      Demo of setting a custom colour for the range selector veil.
+    </p>
+    <div id="rangeselectorveil" style="width:800px; height:320px;"></div>
+
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       g1 = new Dygraph(
           document.getElementById("noroll"),
           data_temp,
@@ -180,6 +190,24 @@
                           includeZero: true,
                           showRangeSelector: true
                        });
-    </script>
+      g8 = new Dygraph(
+          document.getElementById("rangeselectorveil"),
+          [
+            [0, 4],
+            [10, 2],
+            [25, 15],
+            [35, 8],
+            [42, 9]
+          ],
+          {
+            title: 'Daily Temperatures in New York vs. San Francisco',
+            ylabel: 'Temperature (F)',
+            showRangeSelector: true,
+            rangeSelectorVeilColour: 'rgba(200,0,40,0.6)',
+            dateWindow: [5, 20],
+          }
+      );
+    });
+    //--><!]]></script>
   </body>
 </html>

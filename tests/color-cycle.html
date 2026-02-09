@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>color cycles</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
   </head>
   <body>
     <p>Different color cycles</p>
@@ -16,8 +19,9 @@
     <button type=button id=2 onClick="change(this)"> undefined</button>
     </p>
 
-    <script type="text/javascript">
-      var colorSets = [
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
+      colorSets = [
         ['#284785', '#EE1111', '#8AE234'],
         ['#444444', '#888888', '#DDDDDD'],
         null
@@ -31,10 +35,11 @@
                             height: 480,
                             colors: colorSets[0]
                           });
+    });
 
       function change(el) {
         chart.updateOptions({colors: colorSets[el.id]});
       }
-    </script>
+    //--><!]]></script>
   </body>
 </html>

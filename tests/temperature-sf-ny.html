@@ -1,31 +1,36 @@
-<!DOCTYPE html> 
-<html> 
-  <head> 
-    <link rel="stylesheet" href="../dist/dygraph.css">
-    <title>Temperatures</title> 
-    <script type="text/javascript" src="../dist/dygraph.js"></script> 
- 
-    <script type="text/javascript" src="data.js"></script> 
-    <style type="text/css"> 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
+    <title>Temperatures</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
+    <script type="text/javascript" src="data.js"></script>
+
+    <style type="text/css">
     #bordered {
       border: 1px solid red;
     }
     .dygraph-legend {
       text-align: right;
     }
-    </style> 
-  </head> 
-  <body> 
-    <p>Demo of a graph with many data points and custom error bars.</p>
+    </style>
+  </head>
+  <body>
+    <p>Demo of a graph with many data points and custom high/low bands.</p>
     <p>
       No roll period.
     </p>
-    <div id="noroll" style="width:800px; height:320px;"></div> 
+    <div id="noroll" style="width:800px; height:320px;"></div>
     <p>
       Roll period of 14 timesteps.
     </p>
-    <div id="roll14" style="width:800px; height:320px;"></div> 
-    <script type="text/javascript"> 
+    <div id="roll14" style="width:800px; height:320px;"></div>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       g1 = new Dygraph(
           document.getElementById("noroll"),
           data_temp,
@@ -48,6 +53,7 @@
             legend: 'always',
           }
       );
-    </script> 
-  </body> 
-</html> 
+    });
+    //--><!]]></script>
+  </body>
+</html>

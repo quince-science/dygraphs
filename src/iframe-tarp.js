@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * To create a "drag" interaction, you typically register a mousedown event
  * handler on the element where the drag begins. In that handler, you register a
@@ -19,7 +21,7 @@
  *     tarper.uncover();
  *   };
  *   window.addEventListener('mouseup', mouseUpHandler);
- * };
+ * });
  *
  * @constructor
  */
@@ -28,7 +30,7 @@ import * as utils from './dygraph-utils';
 function IFrameTarp() {
   /** @type {Array.<!HTMLDivElement>} */
   this.tarps = [];
-};
+}
 
 /**
  * Find all the iframes in the document and cover them with high z-index

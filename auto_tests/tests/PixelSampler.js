@@ -1,12 +1,13 @@
+'use strict';
+
 // Copyright 2012 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A class to facilitate sampling colors at particular pixels on a
  * dygraph.
  * @author danvk@google.com (Dan Vanderkam)
+ * @license MIT
  */
-
-'use strict';
 
 /**
  * @constructor

@@ -1,3 +1,5 @@
+'use strict';
+
 // Copyright (c) 2012 Google, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/** 
+/**
  * @fileoverview Dygraphs options palette text area.
  *
  * @author konigsberg@google.com (Robert Konigsberg)
  */
-"use strict";
 
 function TextArea(parent) {
   var body = document.getElementsByTagName("body")[0];

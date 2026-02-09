@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>connect separated</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
   </head>
   <body>
     <p>Connecting separated points.  All three of the series should have their points
@@ -19,8 +22,9 @@
   Series 2 <button id="Series2" onclick="change(this)">disabled</button>
   Series 3 <button id="Series3" onclick="change(this)">disabled</button>
 </p>
-    <script type="text/javascript">
-      var g = new Dygraph(document.getElementById("graphdiv"),
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
+      g = new Dygraph(document.getElementById("graphdiv"),
       [
         [ new Date("2009/12/01"), 10, 10, 10],
         [ new Date("2009/12/02"), 15, 11, 12],
@@ -34,6 +38,7 @@
         connectSeparatedPoints: true,
         labels: ["Date","Series1","Series2","Series3"]
       });
+    });
 
       function change(el) {
         var textSequences = [ "disabled", "true", "false" ];
@@ -55,6 +60,6 @@
           }
         }
       }
-    </script>
+    //--><!]]></script>
   </body>
 </html>

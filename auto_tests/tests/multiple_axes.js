@@ -1,4 +1,4 @@
-/** 
+/**
  * @fileoverview Tests involving multiple y-axes.
  *
  * @author danvdk@gmail.com (Dan Vanderkam)
@@ -58,7 +58,7 @@ it('testBasicMultipleAxes', function() {
   );
 
   assert.deepEqual(["0","20","40","60","80","100"], Util.getYLabels("1"));
-  assert.deepEqual(["900K","1.12M","1.34M","1.55M","1.77M","1.99M"], Util.getYLabels("2"));
+  assert.deepEqual(["900k","1.12M","1.34M","1.55M","1.77M","1.99M"], Util.getYLabels("2"));
 });
 
 it('testTwoAxisVisibility', function() {
@@ -142,6 +142,69 @@ it('testMultiChartLabels', function() {
   // TODO(danvk): check relative positioning here: title on top, y left of y2.
 });
 
+// Test option to draw Y2 axis, but not Y1
+it('testOnlyDrawingSecondAxis', function() {
+  var data = getData();
+
+  var g = new Dygraph(
+    document.getElementById("graph"),
+    data,
+    {
+      labels: [ 'Date', 'Y1', 'Y2', 'Y3', 'Y4' ],
+      drawPoints : true,
+      pointSize : 3,
+      series : {
+        'Y4': {
+          axis: 'y2'
+        }
+      },
+      axes: {
+        y: {
+          drawAxis: false
+        },
+        y2: {
+          drawAxis: true
+        }
+      },
+    }
+  );
+
+  assert.isTrue(document.getElementsByClassName("dygraph-axis-label-y1").length == 0);
+  assert.isTrue(document.getElementsByClassName("dygraph-axis-label-y2").length > 0);
+});
+
+// Test default(?) Y-axis drawing: Y1 drawn, Y2 not drawn
+it('testNotDrawingSecondAxis', function() {
+  var data = getData();
+
+  var g = new Dygraph(
+    document.getElementById("graph"),
+    data,
+    {
+      labels: [ 'Date', 'Y1', 'Y2', 'Y3', 'Y4' ],
+      drawPoints : true,
+      pointSize : 3,
+      series : {
+        'Y4': {
+          axis: 'y2'
+        }
+      },
+      axes: {
+        y: {
+          drawAxis: true
+        },
+        y2: {
+          drawAxis: false
+        }
+      },
+    }
+  );
+
+  assert.isTrue(document.getElementsByClassName("dygraph-axis-label-y1").length > 0);
+  assert.isTrue(document.getElementsByClassName("dygraph-axis-label-y2").length == 0);
+
+});
+
 // Check that a chart w/o a secondary y-axis will not get a y2label, even if one
 // is specified.
 it('testNoY2LabelWithoutSecondaryAxis', function() {
@@ -198,8 +261,8 @@ it('testValueRangePerAxisOptions', function() {
     }
   );
   assert.deepEqual(["40", "45", "50", "55", "60", "65"], Util.getYLabels("1"));
-  assert.deepEqual(["900K","1.1M","1.3M","1.5M","1.7M","1.9M"], Util.getYLabels("2"));
-  
+  assert.deepEqual(["900k","1.1M","1.3M","1.5M","1.7M","1.9M"], Util.getYLabels("2"));
+
   g.updateOptions(
     {
       axes: {
@@ -221,12 +284,12 @@ it('testDrawPointCallback', function() {
 
   var results = { y : {}, y2 : {}};
   var firstCallback = function(g, seriesName, ctx, canvasx, canvasy, color, radius) {
-    results.y[seriesName] = 1; 
+    results.y[seriesName] = 1;
     utils.Circles.DEFAULT(g, seriesName, ctx, canvasx, canvasy, color, radius);
 
   };
   var secondCallback = function(g, seriesName, ctx, canvasx, canvasy, color, radius) {
-    results.y2[seriesName] = 1; 
+    results.y2[seriesName] = 1;
     utils.Circles.DEFAULT(g, seriesName, ctx, canvasx, canvasy, color, radius);
   };
 

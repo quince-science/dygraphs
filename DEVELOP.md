@@ -6,20 +6,31 @@ This is a step-by-step guide explaining how to do it.
 
 ### How-to
 
-To install dependencies, run
+To install dependencies, run:
 
+    # for building
+    apt-get install jq mksh pax python3
+    # npm dev dependencies
     npm install
 
-To build dygraphs, run
+To build dygraphs and the tests, run:
 
-    npm run build
+    npm run clean  # if necessary
+    npm run build-jsonly
 
 To run the tests, run:
 
-    npm run build-tests
-    npm run test
+    npm run test       # on the unminified bundle
+    npm run test-min   # on the .min.{css,js}
 
-To iterate on the code, run:
+The prerequisites for a full “npm run build” are:
+
+    # for building
+    apt-get install ed node-jsdoc2 mksh pax python3
+    # for docs
+    apt-get install libjs-bootstrap libjs-jquery libjs-jquery-ui
+
+To iterate on the code, install envify and run:
 
     npm run watch
 
@@ -58,5 +69,5 @@ Adding a unit test ensures that we won't inadvertently break your feature in the
 
 To make a change, you'll need to send a Pull Request. See GitHub's documentation [here][pr].
 
-[gstyle]: http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
+[gstyle]: https://google.github.io/styleguide/javascriptguide.xml
 [pr]: http://help.github.com/send-pull-requests/

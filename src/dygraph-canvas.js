@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2006 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -10,7 +12,7 @@
  *
  * In particular, support for:
  * - grid overlays
- * - error bars
+ * - high/low bands
  * - dygraphs attribute system
  */
 
@@ -25,11 +27,9 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from './dygraph-utils';
 import Dygraph from './dygraph';
-
 
 /**
  * @constructor
@@ -91,7 +91,7 @@ DygraphCanvasRenderer.prototype.clear = function() {
 
 /**
  * This method is responsible for drawing everything on the chart, including
- * lines, error bars, fills and axes.
+ * lines, high/low bands, fills and axes.
  * It is called immediately after clear() on every frame, including during pans
  * and zooms.
  * @private
@@ -306,7 +306,7 @@ DygraphCanvasRenderer.prototype._updatePoints = function() {
 };
 
 /**
- * Add canvas Actually draw the lines chart, including error bars.
+ * Add canvas Actually draw the lines chart, including high/low bands.
  *
  * This function can only be called if DygraphLayout's points array has been
  * updated with canvas{x,y} attributes, i.e. by
@@ -450,9 +450,9 @@ DygraphCanvasRenderer._linePlotter = function(e) {
 };
 
 /**
- * Draws the shaded error bars/confidence intervals for each series.
+ * Draws the shaded high/low bands (confidence intervals) for each series.
  * This happens before the center lines are drawn, since the center lines
- * need to be drawn on top of the error bars for all series.
+ * need to be drawn on top of the high/low bands for all series.
  * @private
  */
 DygraphCanvasRenderer._errorPlotter = function(e) {
@@ -464,7 +464,7 @@ DygraphCanvasRenderer._errorPlotter = function(e) {
 
   var fillGraph = g.getBooleanOption("fillGraph", setName);
   if (fillGraph) {
-    console.warn("Can't use fillGraph option with error bars");
+    console.warn("Can't use fillGraph option with customBars or errorBars option");
   }
 
   var ctx = e.drawingContext;
@@ -534,7 +534,6 @@ DygraphCanvasRenderer._errorPlotter = function(e) {
   }
   ctx.fill();
 };
-
 
 /**
  * Proxy for CanvasRenderingContext2D which drops moveTo/lineTo calls which are
@@ -666,8 +665,8 @@ DygraphCanvasRenderer._fastCanvasProxy = function(context) {
 };
 
 /**
- * Draws the shaded regions when "fillGraph" is set. Not to be confused with
- * error bars.
+ * Draws the shaded regions when "fillGraph" is set.
+ * Not to be confused with high/low bands (historically misnamed errorBars).
  *
  * For stacked charts, it's more convenient to handle all the series
  * simultaneously. So this plotter plots all the points on the first series

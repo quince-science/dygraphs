@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2012 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 /*global Dygraph:false */
 
@@ -15,10 +17,8 @@ Current bits of jankiness:
 */
 
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from '../dygraph-utils';
-
 
 /**
  * Creates the legend, which appears when the user hovers over the chart.
@@ -88,7 +88,7 @@ var calculateEmWidthInDiv = function(div) {
 };
 
 var escapeHTML = function(str) {
-  return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return str.replace(/&/g, "&amp;").replace(/"/g, "&#34;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 };
 
 Legend.prototype.select = function(e) {
@@ -102,32 +102,54 @@ Legend.prototype.select = function(e) {
     return;
   }
 
+  var html = Legend.generateLegendHTML(e.dygraph, xValue, points, this.one_em_width_, row);
+  if (html instanceof Node && html.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+    this.legend_div_.innerHTML = '';
+    this.legend_div_.appendChild(html);
+  } else
+    this.legend_div_.innerHTML = html;
+  // must be done now so offsetWidth isn’t 0…
+  this.legend_div_.style.display = '';
+
   if (legendMode === 'follow') {
     // create floating legend div
     var area = e.dygraph.plotter_.area;
     var labelsDivWidth = this.legend_div_.offsetWidth;
     var yAxisLabelWidth = e.dygraph.getOptionForAxis('axisLabelWidth', 'y');
+    // find the closest data point by checking the currently highlighted series,
+    // or fall back to using the first data point available
+    var highlightSeries = e.dygraph.getHighlightSeries()
+    var point;
+    if (highlightSeries) {
+      point = points.find(p => p.name === highlightSeries);
+      if (!point)
+        point = points[0];
+    } else
+      point = points[0];
     // determine floating [left, top] coordinates of the legend div
     // within the plotter_ area
     // offset 50 px to the right and down from the first selection point
     // 50 px is guess based on mouse cursor size
-    var leftLegend = points[0].x * area.w + 50;
-    var topLegend  = points[0].y * area.h - 50;
+    const followOffsetX = e.dygraph.getNumericOption('legendFollowOffsetX');
+    const followOffsetY = e.dygraph.getNumericOption('legendFollowOffsetY');
+    var leftLegend = point.x * area.w + followOffsetX;
+    var topLegend  = point.y * area.h + followOffsetY;
 
     // if legend floats to end of the chart area, it flips to the other
     // side of the selection point
     if ((leftLegend + labelsDivWidth + 1) > area.w) {
-      leftLegend = leftLegend - 2 * 50 - labelsDivWidth - (yAxisLabelWidth - area.x);
+      leftLegend = leftLegend - 2 * followOffsetX - labelsDivWidth - (yAxisLabelWidth - area.x);
     }
 
-    e.dygraph.graphDiv.appendChild(this.legend_div_);
     this.legend_div_.style.left = yAxisLabelWidth + leftLegend + "px";
     this.legend_div_.style.top = topLegend + "px";
+  } else if (legendMode === 'onmouseover' && this.is_generated_div_) {
+    // synchronise this with Legend.prototype.predraw below
+    var area = e.dygraph.plotter_.area;
+    var labelsDivWidth = this.legend_div_.offsetWidth;
+    this.legend_div_.style.left = area.x + area.w - labelsDivWidth - 1 + "px";
+    this.legend_div_.style.top = area.y + "px";
   }
-
-  var html = Legend.generateLegendHTML(e.dygraph, xValue, points, this.one_em_width_, row);
-  this.legend_div_.innerHTML = html;
-  this.legend_div_.style.display = '';
 };
 
 Legend.prototype.deselect = function(e) {
@@ -141,7 +163,11 @@ Legend.prototype.deselect = function(e) {
   this.one_em_width_ = oneEmWidth;
 
   var html = Legend.generateLegendHTML(e.dygraph, undefined, undefined, oneEmWidth, null);
-  this.legend_div_.innerHTML = html;
+  if (html instanceof Node && html.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+    this.legend_div_.innerHTML = '';
+    this.legend_div_.appendChild(html);
+  } else
+    this.legend_div_.innerHTML = html;
 };
 
 Legend.prototype.didDrawChart = function(e) {
@@ -149,7 +175,7 @@ Legend.prototype.didDrawChart = function(e) {
 };
 
 // Right edge should be flush with the right edge of the charting area (which
-// may not be the same as the right edge of the div, if we have two y-axes.
+// may not be the same as the right edge of the div, if we have two y-axes).
 // TODO(danvk): is any of this really necessary? Could just set "right" in "activate".
 /**
  * Position the labels div so that:
@@ -163,7 +189,8 @@ Legend.prototype.predraw = function(e) {
 
   // TODO(danvk): only use real APIs for this.
   e.dygraph.graphDiv.appendChild(this.legend_div_);
-  var area = e.dygraph.getArea();
+  // synchronise this with Legend.prototype.select above
+  var area = e.dygraph.plotter_.area;
   var labelsDivWidth = this.legend_div_.offsetWidth;
   this.legend_div_.style.left = area.x + area.w - labelsDivWidth - 1 + "px";
   this.legend_div_.style.top = area.y + "px";
@@ -195,6 +222,7 @@ Legend.generateLegendHTML = function(g, x, sel_points, oneEmWidth, row) {
   var data = {
     dygraph: g,
     x: x,
+    i: row,
     series: []
   };
 
@@ -279,7 +307,7 @@ Legend.defaultFormatter = function(data) {
       var series = data.series[i];
       if (!series.isVisible) continue;
 
-      if (html !== '') html += (sepLines ? '<br/>' : ' ');
+      if (html !== '') html += (sepLines ? '<br />' : ' ');
       html += `<span style='font-weight: bold; color: ${series.color};'>${series.dashHTML} ${series.labelHTML}</span>`;
     }
     return html;
@@ -288,6 +316,7 @@ Legend.defaultFormatter = function(data) {
   html = data.xHTML + ':';
   for (var i = 0; i < data.series.length; i++) {
     var series = data.series[i];
+    if (!series.y && !series.yHTML) continue;
     if (!series.isVisible) continue;
     if (sepLines) html += '<br>';
     var cls = series.isHighlighted ? ' class="highlight"' : '';
@@ -295,7 +324,6 @@ Legend.defaultFormatter = function(data) {
   }
   return html;
 };
-
 
 /**
  * Generates html for the "dash" displayed on the legend when using "legend: always".
@@ -320,7 +348,7 @@ function generateLegendDashHTML(strokePattern, color, oneEmWidth) {
   var normalizedPattern = [];
   var loop;
 
-  // Compute the length of the pixels including the first segment twice, 
+  // Compute the length of the pixels including the first segment twice,
   // since we repeat it.
   for (i = 0; i <= strokePattern.length; i++) {
     strokePixelLength += strokePattern[i%strokePattern.length];
@@ -363,6 +391,6 @@ function generateLegendDashHTML(strokePattern, color, oneEmWidth) {
     }
   }
   return dash;
-};
+}
 
 export default Legend;

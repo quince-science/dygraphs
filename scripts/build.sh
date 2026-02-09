@@ -1,57 +1,69 @@
-#!/bin/bash
-# This generates everything under dist:
-# bundled JS, minified JS, minified CSS and source maps.
-set -o errexit
+#!/bin/mksh
+set -ex
+case $KSH_VERSION {
+(*MIRBSD\ KSH*) ;;
+(*) echo E: do not call me with bash or something; exit 255 ;;
+}
 
-mkdir -p dist
+# Build code, tests, browser bundles.
+mksh scripts/build-js.sh
 
-# Create dist/dygraph.js
-browserify \
-  -v \
-  -t babelify \
-  -t [ envify --NODE_ENV development ] \
-  --debug \
-  --standalone Dygraph \
-  src/dygraph.js \
-  > dist/dygraph.tmp.js
+# Build documentation.
+mksh scripts/build-docs.sh
 
-# Create dist/dygraph.js.map
-cat dist/dygraph.tmp.js | exorcist --base . dist/dygraph.js.map > dist/dygraph.js
-
-# Create "production" bundle for minification
-browserify \
-  -v \
-  -t babelify \
-  -t [ envify --NODE_ENV production ] \
-  --debug \
-  --standalone Dygraph \
-  src/dygraph.js \
-  > dist/dygraph.tmp.js
-
-# Create dist/dygraph.tmp.js.map
-cat dist/dygraph.tmp.js | exorcist --base . dist/dygraph.tmp.js.map > /dev/null
-
-header='/*! @license Copyright 2017 Dan Vanderkam (danvdk@gmail.com) MIT-licensed (http://opensource.org/licenses/MIT) */'
-
-# Create dist/dygraph.js.min{,.map}
-uglifyjs --compress --mangle \
-  --preamble "$header" \
-  --in-source-map dist/dygraph.tmp.js.map \
-  --source-map-include-sources \
-  --source-map dist/dygraph.min.js.map \
-  -o dist/dygraph.min.js \
-  dist/dygraph.tmp.js
-
-# Build GWT JAR
-jar -cf dist/dygraph-gwt.jar -C gwt org
-
-# Minify CSS
-cp css/dygraph.css dist/
-cleancss css/dygraph.css -o dist/dygraph.min.css --source-map --source-map-inline-sources
-
-# Build ES5-compatible distribution
-babel src -d src-es5 --compact false
-
-# Remove temp files.
-rm dist/dygraph.tmp.js
-rm dist/dygraph.tmp.js.map
+# This is for on the webserver
+rm -rf site _site
+mkdir site
+cd docroot
+pax -rw . ../site/
+set -A torm -- ../site/LICENSE.txt ../site/dist
+[[ -n $IS_ACTUAL_DEBIAN_BUILD ]] || set -A torm+ -- ../site/.jslibs/*
+rm "${torm[@]}"
+[[ -n $IS_ACTUAL_DEBIAN_BUILD ]] || cp -L .jslibs/* ../site/.jslibs/
+cd ..
+pax -rw LICENSE.txt dist site/
+rm -f site/dist/tests.js
+find site -type d -print0 | xargs -0r chmod 0755 --
+find site -type f -print0 | xargs -0r chmod 0644 --
+set +ex
+rv=0
+x=$(find site \( ! -type d -a ! -type f -a ! -type l \) -ls) || {
+	print -ru2 -- "E: could not check for bogus filetypes"
+	rv=1
+	x=
+}
+[[ -z $x ]] || {
+	print -ru2 -- "E: bogus filetypes found"
+	print -r -- "$x" | sed 's/^/N: /' >&2
+	rv=1
+}
+if [[ $(find --help 2>&1) = *' -printf '* ]]; then
+	x=$(find site -type l -printf '(%Y)%p\n') || {
+		print -ru2 -- "E: could not check for dangling symlinks"
+		rv=1
+		x=
+	}
+	[[ -z $(print -r -- "$x" | grep -v '^[(][dfN][)]') ]] || {
+		print -ru2 -- "E: bad filetypes found"
+		print -r -- "$x" | sed 's/^/N: /' >&2
+		rv=1
+	}
+	x=$(print -r -- "$x" | grep '^[(]N[)]')
+	[[ -z $x ]] || {
+		if [[ -n $IS_ACTUAL_DEBIAN_BUILD ]]; then
+			pf=W:
+			(( rv |= 2 ))
+		else
+			pf=E:
+			rv=1
+		fi
+		print -ru2 -- "$pf dangling symlinks found"
+		print -r -- "$x" | sed 's/^/N: /' >&2
+	}
+fi
+if (( rv & 1 )); then
+	exit 1
+elif (( rv == 0 )); then
+	print -ru2 -- "I: build done"
+fi
+exit 0

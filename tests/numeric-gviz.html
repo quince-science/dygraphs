@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>numeric gviz</title>
+
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
     <script type="text/javascript" src="../dist/dygraph.js"></script>
 
-
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-
-    <script type="text/javascript">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       google.load("visualization", "1", {"packages":[ "columnchart"]});
       google.setOnLoadCallback(drawchart);
 
@@ -23,7 +26,8 @@
                 "graph"));
           chart.draw(data, {errorBars: true, showRoller: true, includeZero: true });
       }
-    </script>
+    });
+    //--><!]]></script>
   </head>
   <body>
   <p>This tests that dygraphs can display gviz DataTable's with a numeric

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>Label styles</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
     <script type="text/javascript" src="data.js"></script>
+
     <style>
       .dygraph-legend {
         background-color: rgba(200, 200, 255, 0.75);
@@ -21,7 +25,8 @@
     <p>Labels are styled with css3:</p>
     <div id="div_g14" style="width:600px; height:300px;"></div>
 
-    <script type="text/javascript">
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
       g14 = new Dygraph(
             document.getElementById("div_g14"),
             NoisyData, {
@@ -35,6 +40,7 @@
               }
             }
           );
-    </script>
+    });
+    //--><!]]></script>
   </body>
 </html>

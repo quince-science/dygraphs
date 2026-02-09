@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/dygraph.css">
+    <meta charset="UTF-8" />
+    <meta name="tdm-reservation" content="1" />
     <title>missing data</title>
-    <script type="text/javascript" src="../dist/dygraph.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../dist/dygraph.css" />
+    <link rel="stylesheet" type="text/css" href="../common/vextlnk.css" />
+    <script type="text/javascript" src="../dist/dygraph.js"></script>
   </head>
   <body>
     <table>
@@ -20,8 +23,9 @@
     </td></tr>
     </table>
 
-    <script type="text/javascript">
-    g = new Dygraph(
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+    Dygraph.onDOMready(function onDOMready() {
+     g = new Dygraph(
       document.getElementById("graph"),
       "Date,GapSeries1,GapSeries2\n" +
       "2009/12/01,10,10\n" +
@@ -84,7 +88,7 @@
         labels: [ "X", "Series1", "Series2" ]
       }
     );
-      
+
     g5 = new Dygraph(
         document.getElementById("graph5"),
         [
@@ -102,7 +106,7 @@
           labels: [ "X", "Series1", "Series2" ]
         }
     );
-      
+
     g6 = new Dygraph(
         document.getElementById("graph6"),
         [
@@ -118,7 +122,8 @@
           connectSeparatedPoints: false,
           labels: [ "X", "Series1", "Series2"]
         }
-    );
-    </script>
+     );
+    });
+    //--><!]]></script>
   </body>
 </html>

@@ -185,11 +185,10 @@ it('testErrorBarsForAlphaSeriesCorrectColors', function() {
   assert.deepEqual([0, 255, 0, 38],  Util.samplePixel(g.hidden_, 1, 225));
 });
 
-
 // Regression test for http://code.google.com/p/dygraphs/issues/detail?id=392
 it('testRollingAveragePreservesNaNs', function() {
   var graph = document.getElementById("graph");
-  var data = 
+  var data =
     [
       [1, [null, null], [3,1]],
       [2, [2, 1], [null, null]],
@@ -218,7 +217,7 @@ it('testRollingAveragePreservesNaNs', function() {
   assert(isNaN(in_series[5][2][0]));
   assert(isNaN(in_series[5][2][1]));
 
-  var out_series = g.dataHandler_.rollingAverage(in_series, 1, g.attributes_);
+  var out_series = g.dataHandler_.rollingAverage(in_series, 1, g.attributes_, 1);
   assert(isNaN(out_series[5][1]));
   assert(isNaN(out_series[5][2][0]));
   assert(isNaN(out_series[5][2][1]));

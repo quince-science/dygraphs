@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Paul Felix (paul.eric.felix@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 /*global Dygraph:false,TouchEvent:false */
 
@@ -11,7 +13,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from '../dygraph-utils';
 import DygraphInteraction from '../dygraph-interaction-model';
@@ -261,7 +262,7 @@ rangeSelector.prototype.initInteraction_ = function() {
   var tarp = new IFrameTarp();
 
   // functions, defined below.  Defining them this way (rather than with
-  // "function foo() {...}" makes JSHint happy.
+  // "function foo() {...}") makes JSHint happy.
   var toXDataWindow, onZoomStart, onZoom, onZoomEnd, doZoom, isMouseInPanZone,
       onPanStart, onPan, onPanEnd, doPan, onCanvasHover;
 
@@ -531,7 +532,6 @@ rangeSelector.prototype.drawStaticLayer_ = function() {
   ctx.stroke();
 };
 
-
 /**
  * @private
  * Draws the mini plot in the background canvas.
@@ -664,7 +664,7 @@ rangeSelector.prototype.computeCombinedSeriesAndLimits_ = function() {
     if (!includeSeries[i]) continue;
     var series = dataHandler.extractSeries(g.rawData_, i, options);
     if (g.rollPeriod() > 1) {
-      series = dataHandler.rollingAverage(series, g.rollPeriod(), options);
+      series = dataHandler.rollingAverage(series, g.rollPeriod(), options, i);
     }
 
     rolledSeries.push(series);
@@ -767,7 +767,9 @@ rangeSelector.prototype.drawInteractiveLayer_ = function() {
     var leftHandleCanvasPos = Math.max(margin, zoomHandleStatus.leftHandlePos - this.canvasRect_.x);
     var rightHandleCanvasPos = Math.min(width, zoomHandleStatus.rightHandlePos - this.canvasRect_.x);
 
-    ctx.fillStyle = 'rgba(240, 240, 240, ' + this.getOption_('rangeSelectorAlpha').toString() + ')';
+    const veilColour = this.getOption_('rangeSelectorVeilColour');
+    ctx.fillStyle = veilColour ? veilColour :
+      ('rgba(240, 240, 240, ' + this.getOption_('rangeSelectorAlpha').toString() + ')');
     ctx.fillRect(0, 0, leftHandleCanvasPos, this.canvasRect_.h);
     ctx.fillRect(rightHandleCanvasPos, 0, this.canvasRect_.w - rightHandleCanvasPos, this.canvasRect_.h);
 

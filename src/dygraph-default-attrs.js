@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import * as DygraphTickers from './dygraph-tickers';
 import DygraphInteraction from './dygraph-interaction-model';
@@ -47,8 +47,11 @@ var DEFAULT_ATTRS = {
   stackedGraph: false,
   stackedGraphNaNFill: 'all',
   hideOverlayOnMouseOut: true,
+  resizable: 'no',
 
   legend: 'onmouseover',
+  legendFollowOffsetX: 50,
+  legendFollowOffsetY: -50,
   stepPlot: false,
   xRangePad: 0,
   yRangePad: null,
@@ -67,6 +70,7 @@ var DEFAULT_ATTRS = {
 
   interactionModel: DygraphInteraction.defaultModel,
   animatedZooms: false,  // (for now)
+  animateBackgroundFade: true,
 
   // Range selector options
   showRangeSelector: false,

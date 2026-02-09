@@ -1,6 +1,6 @@
 /*global Gallery,Dygraph,data */
 /*global NoisyData,downV3,moveV3,upV3,clickV3,dblClickV3,scrollV3,restorePositioning,downV4,moveV4,upV4,dblClickV4,captureCanvas */
-
+//galleryActive=true
 Gallery.register(
   'interaction',
   {
@@ -28,11 +28,11 @@ Gallery.register(
           "<h3>Custom interaction model</h3>",
           "<div style='width:600px;'>",
           "  <p style='text-align:center;'>",
-          "    Zoom in: double-click, scroll wheel<br/>",
-          "    Zoom out: ctrl-double-click, scroll wheel<br/>",
+          "    Zoom in: double-click, scroll wheel<br />",
+          "    Zoom out: ctrl-double-click, scroll wheel<br />",
           "    Standard Zoom: shift-click-drag",
-          "    Standard Pan: click-drag<br/>",
-          "    Restore zoom level: press button<br/>",
+          "    Standard Pan: click-drag<br />",
+          "    Restore zoom level: press button<br />",
           "  </p>",
           "  <button id='restore3'>Restore position</button>",
           "  <div id='div_g3' style='width:600px; height:300px;'></div>",

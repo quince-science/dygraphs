@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2011 Dan Vanderkam (danvdk@gmail.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
@@ -10,7 +12,6 @@
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import * as utils from './dygraph-utils';
 
@@ -48,8 +49,8 @@ var DygraphLayout = function(dygraph) {
   this.annotations = [];
   this.yAxes_ = null;
 
-  // TODO(danvk): it's odd that xTicks_ and yTicks_ are inputs, but xticks and
-  // yticks are outputs. Clean this up.
+  // TODO(danvk): it's odd that xTicks_ and yTicks_ are inputs,
+  // but xticks and yticks are outputs. Clean this up.
   this.xTicks_ = null;
   this.yTicks_ = null;
 };
@@ -201,7 +202,7 @@ DygraphLayout.prototype._evaluateLimits = function() {
     axis.yrange = axis.maxyval - axis.minyval;
     axis.yscale = (axis.yrange !== 0 ? 1.0 / axis.yrange : 1.0);
 
-    if (this.dygraph_.getOption("logscale")) {
+    if (this.dygraph_.getOption("logscale") || axis.logscale) {
       axis.ylogrange = utils.log10(axis.maxyval) - utils.log10(axis.minyval);
       axis.ylogscale = (axis.ylogrange !== 0 ? 1.0 / axis.ylogrange : 1.0);
       if (!isFinite(axis.ylogrange) || isNaN(axis.ylogrange)) {
@@ -247,12 +248,14 @@ DygraphLayout.prototype._evaluateLineCharts = function() {
     var axis = this.dygraph_.axisPropertiesForSeries(setName);
     // TODO (konigsberg): use optionsForAxis instead.
     var logscale = this.dygraph_.attributes_.getForSeries("logscale", setName);
+    var outOfXBounds = 0, outOfYBounds = 0;
 
     for (var j = 0; j < points.length; j++) {
       var point = points[j];
 
       // Range from 0-1 where 0 represents left and 1 represents right.
       point.x = DygraphLayout.calcXNormal_(point.xval, this._xAxis, isLogscaleForX);
+      outOfXBounds += (point.x < 0) || (point.x > 1);
       // Range from 0-1 where 0 represents top and 1 represents bottom
       var yval = point.yval;
       if (isStacked) {
@@ -269,6 +272,14 @@ DygraphLayout.prototype._evaluateLineCharts = function() {
         }
       }
       point.y = DygraphLayout.calcYNormal_(axis, yval, logscale);
+      outOfYBounds += (point.y < 0) || (point.y > 1);
+    }
+
+    if (outOfXBounds > 2) {
+      console.warn(outOfXBounds + ' points out of X bounds:' + this._xAxis.minval + ' - ' + this._xAxis.maxval);
+    }
+    if (outOfYBounds > 0) {
+      console.warn(outOfYBounds + ' points out of Y bounds:' + axis.minyval + ' - ' + axis.maxyval);
     }
 
     this.dygraph_.dataHandler_.onLineEvaluated(points, axis, logscale);
@@ -331,6 +342,9 @@ DygraphLayout.prototype._evaluateAnnotations = function() {
       if (k in annotations) {
         p.annotation = annotations[k];
         this.annotated_points.push(p);
+        //if there are multiple same x-valued points, the annotation would be rendered multiple times
+        //remove already rendered annotation
+        delete annotations[k];
       }
     }
   }

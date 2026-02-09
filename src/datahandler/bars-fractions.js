@@ -1,17 +1,18 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2013 David Eberlein (david.eberlein@ch.sauter-bc.com)
- * MIT-licensed (http://opensource.org/licenses/MIT)
+ * MIT-licenced: https://opensource.org/licenses/MIT
  */
 
 /**
- * @fileoverview DataHandler implementation for the combination 
+ * @fileoverview DataHandler implementation for the combination
  * of error bars and fractions options.
  * @author David Eberlein (david.eberlein@ch.sauter-bc.com)
  */
 
 /*global Dygraph:false */
-"use strict";
 
 import BarsHandler from './bars';
 
@@ -30,8 +31,9 @@ FractionsBarsHandler.prototype.extractSeries = function(rawData, i, options) {
   var series = [];
   var x, y, point, num, den, value, stddev, variance;
   var mult = 100.0;
-  var sigma = options.get("sigma");
-  var logScale = options.get('logscale');
+  const seriesLabel = options.get("labels")[i];
+  const logScale = options.getForSeries("logscale", seriesLabel);
+  const sigma = options.getForSeries("sigma", seriesLabel);
   for ( var j = 0; j < rawData.length; j++) {
     x = rawData[j][0];
     point = rawData[j][i];
@@ -65,11 +67,12 @@ FractionsBarsHandler.prototype.extractSeries = function(rawData, i, options) {
 
 /** @inheritDoc */
 FractionsBarsHandler.prototype.rollingAverage =
-    function(originalData, rollPeriod, options) {
+    function(originalData, rollPeriod, options, i) {
   rollPeriod = Math.min(rollPeriod, originalData.length);
   var rollingData = [];
-  var sigma = options.get("sigma");
-  var wilsonInterval = options.get("wilsonInterval");
+  const seriesLabel = options.get("labels")[i];
+  const sigma = options.getForSeries("sigma", seriesLabel);
+  const wilsonInterval = options.getForSeries("wilsonInterval", seriesLabel);
 
   var low, high, i, stddev;
   var num = 0;
@@ -87,7 +90,7 @@ FractionsBarsHandler.prototype.rollingAverage =
     var value = den ? num / den : 0.0;
     if (wilsonInterval) {
       // For more details on this confidence interval, see:
-      // http://en.wikipedia.org/wiki/Binomial_confidence_interval
+      // https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
       if (den) {
         var p = value < 0 ? 0 : value, n = den;
         var pm = sigma * Math.sqrt(p * (1 - p) / n + sigma * sigma / (4 * n * n));
@@ -101,7 +104,7 @@ FractionsBarsHandler.prototype.rollingAverage =
       }
     } else {
       stddev = den ? sigma * Math.sqrt(value * (1 - value) / den) : 1.0;
-      rollingData[i] = [ date, mult * value, 
+      rollingData[i] = [ date, mult * value,
                          [ mult * (value - stddev), mult * (value + stddev) ] ];
     }
   }
