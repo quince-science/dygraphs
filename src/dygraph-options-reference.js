@@ -856,6 +856,12 @@ OPTIONS_REFERENCE =  // <JSON>
     "labels": ["Interactive Elements"],
     "type": "string",
     "description": "Defines how points are selected. Valid values are 'closest-x' and 'euclidian'. 'closest-x' selects the nearest point along the X axis, while 'euclidian' selects the closest point in any direction. If highlightSeriesOpts is set, this has no effect."
+  },
+  "dataOrdered": {
+    "default": "true",
+    "labels": ["Data"],
+    "type": "boolean",
+    "description": "Specifies whether or not the graph data are ordered along the X axis. This is the default assumption since it allows many optimizations and you should do this whenever possible. If data cannot be ordered by X axis value, set this to false to ensure that data is processed correctly. Note that setting this to false can severely impact performance and may cause issues with other features such as dynamic updating."
   }
 }
 ;  // </JSON>

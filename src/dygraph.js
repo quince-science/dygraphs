@@ -535,11 +535,29 @@ Dygraph.prototype.xAxisRange = function() {
  */
 Dygraph.prototype.xAxisExtremes = function() {
   var pad = this.getNumericOption('xRangePad') / this.plotter_.area.w;
+  
   if (this.numRows() === 0) {
     return [0 - pad, 1 + pad];
   }
+  
   var left = this.rawData_[0][0];
   var right = this.rawData_[this.rawData_.length - 1][0];
+
+  if (!this.getOption('dataOrdered')) {
+    left = Number.MAX_SAFE_INTEGER;
+    right = Number.MIN_SAFE_INTEGER;
+
+    this.rawData_.forEach(function(x, idx) {
+      if (x[0] < left) {
+        left = x[0];
+      }
+
+      if (x[0] > right) {
+        right = x[0];
+      }
+    });
+  }
+
   if (pad) {
     // Must keep this in sync with dygraph-layout _evaluateLimits()
     var range = right - left;

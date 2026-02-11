@@ -7,6 +7,10 @@ import * as utils from './dygraph-utils';
 
 // Default attribute values.
 var DEFAULT_ATTRS = {
+
+  // Data characteristics
+  dataOrdered: true,
+
   highlightCircleSize: 3,
   highlightSeriesOpts: null,
   highlightSeriesBackgroundAlpha: 0.5,
