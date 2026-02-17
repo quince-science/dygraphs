@@ -15,8 +15,6 @@ import Dygraph from '../../src/dygraph';
 import DygraphOps from './DygraphOps';
 import Util from './Util';
 
-import 'core-js/es/promise';
-
 // Note that this data contains 2 points with the same
 // x value. euclidian selection mode can distinguish them.
 var TEST_SERIES = "X,Y1,Y2\n" +

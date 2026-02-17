@@ -76,8 +76,5 @@
   },
   "pre-commit": [
     "tests-ok"
-  ],
-  "dependencies": {
-    "promise": "^8.3.0"
-  }
+  ]
 }
